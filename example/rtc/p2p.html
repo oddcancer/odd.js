@@ -1,0 +1,333 @@
+﻿<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>odd.js - WebRTC P2P Example</title>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta name="format-detection" content="telephone=no,email=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-touch-fullscreen" content="yes" />
+    <meta name="x5-fullscreen" content="true" />
+    <meta name="App-Config" content="fullscreen=yes, useHistoryState=yes, transition=yes" />
+
+    <link type='text/css' rel='stylesheet' href='css/style.css' />
+
+    <!-- <script type='text/javascript' src='../../release/odd.common.min.js'></script> -->
+    <!-- <script type='text/javascript' src='../../release/odd.im.min.js'></script> -->
+    <script type='text/javascript' src='../../src/odd.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.amf.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.bitstream.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.browser.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.crypt.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.css.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.endian.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.filesaver.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.golomb.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.logger.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.url.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.xml2json.js'></script>
+    <script type='text/javascript' src='../../src/utils/mpd/mpd.js'></script>
+    <script type='text/javascript' src='../../src/utils/mpd/mpd.matchers.js'></script>
+    <script type='text/javascript' src='../../src/utils/mpd/mpd.matchers.datetime.js'></script>
+    <script type='text/javascript' src='../../src/utils/mpd/mpd.matchers.duration.js'></script>
+    <script type='text/javascript' src='../../src/utils/mpd/mpd.matchers.numeric.js'></script>
+    <script type='text/javascript' src='../../src/utils/mpd/mpd.matchers.string.js'></script>
+    <script type='text/javascript' src='../../src/events/events.js'></script>
+    <script type='text/javascript' src='../../src/events/events.eventdispatcher.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.streamsaver.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.timer.js'></script>
+    <script type='text/javascript' src='../../src/im/im.js'></script>
+    <script type='text/javascript' src='../../src/im/message/message.js'></script>
+    <script type='text/javascript' src='../../src/im/message/message.abort.js'></script>
+    <script type='text/javascript' src='../../src/im/message/message.ackwindowsize.js'></script>
+    <script type='text/javascript' src='../../src/im/message/message.ack.js'></script>
+    <script type='text/javascript' src='../../src/im/message/message.command.js'></script>
+    <script type='text/javascript' src='../../src/im/message/message.usercontrol.js'></script>
+    <script type='text/javascript' src='../../src/im/im.state.js'></script>
+    <script type='text/javascript' src='../../src/im/im.responder.js'></script>
+    <script type='text/javascript' src='../../src/im/im.netconnection.js'></script>
+    <script type='text/javascript' src='../../src/im/im.netstream.js'></script>
+</head>
+
+<body ontouchstart=''>
+    <div class='wrap'>
+        <div class=''>
+            <section>
+                <div class='rtc-parameters'>
+                    <div class='row'>
+                        <span>
+                            <textarea id='ta_info' style='width: 100%; height: 150px;' value=''></textarea>
+                        </span>
+                    </div>
+                </div>
+                <div class='toolbar'>
+                    <a class='btn green' onclick='onPublishClick();'>Publish</a>
+                    <a class='btn green' onclick='onSubscribeClick();'>Subscribe</a>
+                </div>
+                <div id='view'>
+                    <video id='camera' playsinline autoplay controls></video>
+                    <video id='video1' playsinline autoplay controls></video>
+                    <video id='video2' playsinline autoplay controls></video>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script type='text/javascript'>
+        var utils = odd.utils,
+            events = odd.events,
+            NetStatusEvent = events.NetStatusEvent,
+            Level = events.Level,
+            Code = events.Code,
+
+            chan = '001',
+            user = {};
+
+        var im = odd.im.create({ mode: 'file' });
+        im.addEventListener(NetStatusEvent.NET_STATUS, onStatus);
+        (async function () {
+            await im.setup({
+                url: 'wss://' + location.host + '/im',
+            }).catch((err) => {
+                im.logger.error(`Failed to setup: ${err}`);
+            });
+            await im.join(chan);
+        })();
+
+        var state = 0;
+        var publisher = new RTCPeerConnection({
+            iceServers: [{
+                urls: ["stun:stun.l.google.com:19302"], // ?transport=tcp
+                username: "",
+                credential: ""
+            }],
+            iceTransportPolicy: "all" // all, relay
+        });
+        publisher.addEventListener('negotiationneeded', onNegotiationNeeded);
+        publisher.addEventListener('track', onTrack);
+        publisher.addEventListener('icecandidate', onIceCandidate);
+        publisher.addEventListener('iceconnectionstatechange', onIceConnectionStateChange);
+
+        var subscriber1 = new RTCPeerConnection({
+            iceServers: [{
+                urls: ["stun:stun.l.google.com:19302"], // ?transport=tcp
+                username: "",
+                credential: ""
+            }],
+            iceTransportPolicy: "all" // all, relay
+        });
+        subscriber1.addEventListener('negotiationneeded', onNegotiationNeeded);
+        subscriber1.addEventListener('track', onTrack);
+        subscriber1.addEventListener('icecandidate', onIceCandidate);
+        subscriber1.addEventListener('iceconnectionstatechange', onIceConnectionStateChange);
+
+        var subscriber2 = new RTCPeerConnection({
+            iceServers: [{
+                urls: ["stun:stun.l.google.com:19302"], // ?transport=tcp
+                username: "",
+                credential: ""
+            }],
+            iceTransportPolicy: "all" // all, relay
+        });
+        subscriber2.addEventListener('negotiationneeded', onNegotiationNeeded);
+        subscriber2.addEventListener('track', onTrack);
+        subscriber2.addEventListener('icecandidate', onIceCandidate);
+        subscriber2.addEventListener('iceconnectionstatechange', onIceConnectionStateChange);
+
+        function onPublishClick(e) {
+            navigator.mediaDevices.getUserMedia({
+                audio: {
+                    sampleRate: 128,
+                },
+                video: {
+                    aspectRatio: 16 / 9,
+                    width: 960,
+                    height: 540,
+                    frameRate: 15,
+                    facingMode: 'user',
+                    cursor: 'always', // always, motion, never
+                },
+            }).then(function (stream) {
+                camera.muted = true;
+                camera.srcObject = stream;
+                camera.play().catch(function (err) {
+                    console.warn(`${err}`);
+                });
+
+                stream.getTracks().forEach(function (track) {
+                    publisher.addTrack(track, stream);
+                });
+            });
+        }
+
+        function onNegotiationNeeded(e) {
+            publisher.createOffer().then(function (offer) {
+                console.log(`createOffer success:\n${offer.sdp}`);
+                publisher.setLocalDescription(offer).then(function () {
+                    console.log(`setLocalDescription success: type=${offer.type}`);
+                    im.sendUserControl(0, null, {
+                        type: 'sdp',
+                        cast: 'multi',
+                        chan: chan,
+                        data: {
+                            type: 'offer',
+                            sdp: offer.sdp,
+                        },
+                    });
+                }).catch(function (err) {
+                    console.error(`Failed to setLocalDescription: type=${offer.type}`);
+                });
+            }).catch(function (err) {
+                console.error(`Failed to createOffer: ${err}`);
+            });
+        }
+
+        function onSubscribeClick(e) {
+            console.log(`Send play command`);
+            state++;
+            im.sendUserControl(0, null, {
+                type: 'play',
+                cast: 'multi',
+                chan: chan,
+                data: {
+                    stream: '',
+                },
+            });
+        }
+
+        function onStatus(e) {
+            var level = e.data.level;
+            var code = e.data.code;
+            var description = e.data.description;
+            var info = e.data.info;
+            var method = { status: 'debug', warning: 'warn', error: 'error' }[level] || 'debug';
+            im.logger[method](`onStatus: level=${level}, code=${code}, description=${description}, info=`, info);
+
+            switch (code) {
+                case Code.NETCONNECTION_CONNECT_SUCCESS:
+                    user = info.user;
+                    break;
+                case Code.NETGROUP_SENDTO_NOTIFY:
+                case Code.NETGROUP_POSTING_NOTIFY:
+                    if (info.Info.user.id != user.id) {
+                        onUserControl(info);
+                    }
+                    break;
+            }
+        }
+
+        function onUserControl(m) {
+            switch (m.Info.type) {
+                case 'sdp':
+                    onSdp(m.Info.data);
+                    break;
+                case 'candidate':
+                    onCandidate(m.Info.data);
+                    break;
+            }
+        }
+
+        function onSdp(sdp) {
+            console.log(`Received ${sdp.type}:\n${sdp.sdp}`);
+            var pc;
+            switch (state) {
+                case 0:
+                    pc = publisher;
+                    break;
+                case 1:
+                    pc = subscriber1;
+                    break;
+                case 2:
+                    pc = subscriber2;
+                    break;
+            }
+            pc.setRemoteDescription(new RTCSessionDescription(sdp)).then(function () {
+                console.log(`setRemoteDescription success: type=${sdp.type}`);
+                if (sdp.type === 'offer') {
+                    pc.createAnswer().then(function (answer) {
+                        console.log(`createAnswer success:\n${answer.sdp}`);
+                        pc.setLocalDescription(answer).then(function () {
+                            console.log(`setLocalDescription success: type=${answer.type}`);
+                            im.sendUserControl(0, null, {
+                                type: 'sdp',
+                                cast: 'multi',
+                                chan: chan,
+                                data: {
+                                    type: 'answer',
+                                    sdp: answer.sdp,
+                                },
+                            });
+                        }).catch(function (err) {
+                            console.error(`Failed to setLocalDescription: type=${answer.type}`);
+                        });
+                    }).catch(function (err) {
+                        console.error(`Failed to createAnswer: ${err}`);
+                    });
+                }
+            }).catch(function (err) {
+                console.error(`Failed to setRemoteDescription: type=${sdp.type}, error=${err}`);
+            });
+        }
+
+        function onCandidate(candidate) {
+            var pc;
+            switch (state) {
+                case 0:
+                    pc = publisher;
+                    break;
+                case 1:
+                    pc = subscriber1;
+                    break;
+                case 2:
+                    pc = subscriber2;
+                    break;
+            }
+            pc.addIceCandidate(new RTCIceCandidate(candidate)).then(function () {
+                console.log(`addIceCandidate success: candidate=${candidate.candidate}, mid=${candidate.sdpMid}, mlineindex=${candidate.sdpMLineIndex}`);
+            }).catch(function (err) {
+                console.error(`Failed to addIceCandidate: candidate=${candidate.candidate}, mid=${candidate.sdpMid}, mlineindex=${candidate.sdpMLineIndex}`);
+            });
+        }
+
+        function onTrack(e) {
+            var video = state == 1 ? video1 : video2;
+            console.log(`onTrack: kind=${e.track.kind}, track=${e.track.id}, stream=${e.streams[0].id}`);
+            video.srcObject = e.streams[0];
+            video.play().catch(function (err) {
+                console.warn(`${err}`);
+            });
+        }
+
+        function onIceCandidate(e) {
+            var candidate = e.candidate;
+            if (candidate == null) {
+                candidate = {
+                    candidate: '',
+                    sdpMid: '',
+                    sdpMLineIndex: 0,
+                };
+            }
+            console.log(`onIceCandidate: candidate=${candidate.candidate}, mid=${candidate.sdpMid}, mlineindex=${candidate.sdpMLineIndex}`);
+            im.sendUserControl(0, null, {
+                type: 'candidate',
+                cast: 'multi',
+                chan: chan,
+                data: {
+                    candidate: candidate.candidate,
+                    sdpMid: candidate.sdpMid,
+                    sdpMLineIndex: candidate.sdpMLineIndex,
+                },
+            });
+        }
+
+        function onIceConnectionStateChange(e) {
+            console.log(`onIceConnectionStateChange: ${e.target.iceConnectionState}`);
+        }
+    </script>
+</body>
+
+</html>

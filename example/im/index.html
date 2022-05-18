@@ -1,0 +1,123 @@
+﻿<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>odd.js - IM Example</title>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta name="format-detection" content="telephone=no,email=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-touch-fullscreen" content="yes" />
+    <meta name="x5-fullscreen" content="true" />
+    <meta name="App-Config" content="fullscreen=yes, useHistoryState=yes, transition=yes" />
+
+    <link type='text/css' rel='stylesheet' href='css/style.css' />
+    <link type='text/css' rel='stylesheet' href='css/odd.im.classic.css' />
+
+    <!-- <script type='text/javascript' src='../../release/odd.common.min.js'></script> -->
+    <!-- <script type='text/javascript' src='../../release/odd.im.min.js'></script> -->
+    <!-- <script type='text/javascript' src='../../release/odd.im.ui.min.js'></script> -->
+    <script type='text/javascript' src='../../src/odd.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.amf.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.bitstream.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.browser.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.crypt.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.css.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.endian.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.filesaver.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.golomb.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.logger.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.url.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.xml2json.js'></script>
+    <script type='text/javascript' src='../../src/utils/mpd/mpd.js'></script>
+    <script type='text/javascript' src='../../src/utils/mpd/mpd.matchers.js'></script>
+    <script type='text/javascript' src='../../src/utils/mpd/mpd.matchers.datetime.js'></script>
+    <script type='text/javascript' src='../../src/utils/mpd/mpd.matchers.duration.js'></script>
+    <script type='text/javascript' src='../../src/utils/mpd/mpd.matchers.numeric.js'></script>
+    <script type='text/javascript' src='../../src/utils/mpd/mpd.matchers.string.js'></script>
+    <script type='text/javascript' src='../../src/events/events.js'></script>
+    <script type='text/javascript' src='../../src/events/events.eventdispatcher.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.streamsaver.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.timer.js'></script>
+    <script type='text/javascript' src='../../src/im/im.js'></script>
+    <script type='text/javascript' src='../../src/im/message/message.js'></script>
+    <script type='text/javascript' src='../../src/im/message/message.abort.js'></script>
+    <script type='text/javascript' src='../../src/im/message/message.ackwindowsize.js'></script>
+    <script type='text/javascript' src='../../src/im/message/message.ack.js'></script>
+    <script type='text/javascript' src='../../src/im/message/message.command.js'></script>
+    <script type='text/javascript' src='../../src/im/message/message.usercontrol.js'></script>
+    <script type='text/javascript' src='../../src/im/im.state.js'></script>
+    <script type='text/javascript' src='../../src/im/im.responder.js'></script>
+    <script type='text/javascript' src='../../src/im/im.netconnection.js'></script>
+    <script type='text/javascript' src='../../src/im/im.netstream.js'></script>
+    <script type='text/javascript' src='../../src/im/ui/ui.js'></script>
+    <script type='text/javascript' src='../../src/im/ui/components/components.js'></script>
+    <script type='text/javascript' src='../../src/im/ui/components/components.button.js'></script>
+    <script type='text/javascript' src='../../src/im/ui/components/components.label.js'></script>
+    <script type='text/javascript' src='../../src/im/ui/components/components.select.js'></script>
+    <script type='text/javascript' src='../../src/im/ui/components/components.slider.js'></script>
+    <script type='text/javascript' src='../../src/im/ui/components/components.panel.js'></script>
+    <script type='text/javascript' src='../../src/im/ui/ui.display.js'></script>
+    <script type='text/javascript' src='../../src/im/ui/ui.toolbar.js'></script>
+    <script type='text/javascript' src='../../src/im/ui/ui.input.js'></script>
+</head>
+
+<body ontouchstart=''>
+    <div class='wrap'>
+        <div class=''>
+            <section>
+                <div id='dialog'>
+                    <div class='im-wrapper im-ui-classic' state=''>
+                        <div class='im-content'>
+                            <div class='im-content-time'>2021-12-01 12:00:00</div>
+                            <div class='im-content-item [me]'>
+                                <span class='im-level vip3'>vip3</span>
+                                <!-- <span class='im-badge'></span> -->
+                                <span class='im-nick'>Spencer</span>
+                                <span class='im-separator'>:</span>
+                                <span class='im-body'><span class='im-emoji'>&#x1F600;</span><span class='im-emoji'>&#x1F600;</span><span class='im-emoji'>&#x1F600;</span>Hi there! This is a loooooooooooooong magic message.</span>
+                            </div>
+                            <div class='im-content-item [me]'>
+                                <span class='im-level vip3'>vip3</span>
+                                <!-- <span class='im-badge'></span> -->
+                                <span class='im-nick'>Spencer</span>
+                                <span class='im-separator'>:</span>
+                                <span class='im-body'><span class='im-emoji'>&#x1F600;</span><span class='im-emoji'>&#x1F600;</span><span class='im-emoji'>&#x1F600;</span>Hi there! This is a loooooooooooooong magic message.</span>
+                            </div>
+                        </div>
+                        <div class='im-display'></div>
+                        <div class='im-toolbar'>
+                            <div class='im-select emojipicker'>
+                                <div class='im-select-text'>&#x1F600;</div>
+                                <div class='im-select-menu'>
+                                    <span class='im-select-option'>&#x1F600;</span>
+                                    <span class='im-select-option'>&#x1F601;</span>
+                                    <span class='im-select-option'>&#x1F602;</span>
+                                    <span class='im-select-option'>&#x1F603;</span>
+                                    <span class='im-select-option'>&#x1F604;</span>
+                                    <span class='im-select-option'>&#x1F605;</span>
+                                    <span class='im-select-option'>&#x1F606;</span>
+                                    <span class='im-select-option'>&#x1F607;</span>
+                                    <span class='im-select-option'>&#x1F608;</span>
+                                    <span class='im-select-option'>&#x1F609;</span>
+                                    <span class='im-select-option'>&#x1F60A;</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class='im-input'>
+                            <textarea></textarea>
+                            <span class='im-button green'>Send</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script type='text/javascript' src='js/main.js'></script>
+</body>
+
+</html>

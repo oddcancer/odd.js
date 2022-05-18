@@ -1,0 +1,9 @@
+.DS_Store
+*/.DS_Store
+release/
+src/player/av/
+src/player/module/
+src/player/player.controller.js
+src/player/player.js
+src/player/player.model.js
+src/player/player.view.js

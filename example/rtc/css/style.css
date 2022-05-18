@@ -1,0 +1,99 @@
+﻿@import url("global.css") screen;
+
+
+/**
+ * rtc-parameters
+ */
+
+.rtc-parameters {
+	margin: 20px auto 4px auto;
+	width: 100%;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+}
+
+.rtc-parameters .row {
+	margin: 4px 0;
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+}
+
+.rtc-parameters .row > span {
+	margin-right: 40px;
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+}
+
+.rtc-parameters .row > span:last-child {
+	margin-right: 0;
+}
+
+.rtc-parameters .row > span label {
+	margin-right: 10px;
+	width: 94px;
+	flex-grow: 0;
+}
+
+.rtc-parameters .row > span input,
+.rtc-parameters .row > span select {
+	padding: 2px 4px;
+	height: 24px;
+	line-height: 24px;
+	flex-grow: 1;
+}
+
+
+/**
+ * toolbar
+ */
+
+.toolbar {
+	margin: 4px auto;
+	width: 100%;
+	height: 28px;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}
+
+.toolbar > * {
+	margin-right: 20px;
+}
+
+.toolbar > *:last-child {
+	margin-right: 0;
+}
+
+@media only screen and (max-width: 568px) {
+.toolbar {
+	height: auto;
+	display: block;
+	flex-direction: unset;
+}
+
+.toolbar > *,
+.toolbar > *:last-child {
+	margin: 4px auto;
+}
+}
+
+
+/**
+ * view
+ */
+
+#view {
+	margin: 20px 0 0 0;
+}
+
+#view video {
+	width: 50%;
+	float: left;
+}
+
+#view video:nth-child(even) {
+	float: none;
+}

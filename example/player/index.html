@@ -1,0 +1,248 @@
+﻿<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>odd.js - Player Example</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta name="format-detection" content="telephone=no,email=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-touch-fullscreen" content="yes" />
+    <meta name="x5-fullscreen" content="true" />
+    <meta name="App-Config" content="fullscreen=yes, useHistoryState=yes, transition=yes" />
+
+    <link type='text/css' rel='stylesheet' href='css/style.css' />
+    <link type='text/css' rel='stylesheet' href='css/odd.player.classic.css' />
+
+    <!-- <script type='text/javascript' src='../../release/odd.common.min.js'></script> -->
+    <!-- <script type='text/javascript' src='../../release/odd.rtc.min.js'></script> -->
+    <!-- <script type='text/javascript' src='../../release/odd.player.min.js'></script> -->
+    <!-- <script type='text/javascript' src='../../release/odd.player.ui.min.js'></script> -->
+    <script type='text/javascript' src='../../src/odd.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.amf.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.bitstream.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.browser.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.crypt.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.css.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.endian.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.filesaver.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.golomb.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.logger.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.url.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.xml2json.js'></script>
+    <script type='text/javascript' src='../../src/utils/mpd/mpd.js'></script>
+    <script type='text/javascript' src='../../src/utils/mpd/mpd.matchers.js'></script>
+    <script type='text/javascript' src='../../src/utils/mpd/mpd.matchers.datetime.js'></script>
+    <script type='text/javascript' src='../../src/utils/mpd/mpd.matchers.duration.js'></script>
+    <script type='text/javascript' src='../../src/utils/mpd/mpd.matchers.numeric.js'></script>
+    <script type='text/javascript' src='../../src/utils/mpd/mpd.matchers.string.js'></script>
+    <script type='text/javascript' src='../../src/events/events.js'></script>
+    <script type='text/javascript' src='../../src/events/events.eventdispatcher.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.streamsaver.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.timer.js'></script>
+    <script type='text/javascript' src='../../src/rtc/rtc.js'></script>
+    <script type='text/javascript' src='../../src/rtc/rtc.constraints.js'></script>
+    <script type='text/javascript' src='../../src/rtc/rtc.state.js'></script>
+    <script type='text/javascript' src='../../src/rtc/rtc.stats.js'></script>
+    <script type='text/javascript' src='../../src/rtc/rtc.signal.js'></script>
+    <script type='text/javascript' src='../../src/rtc/rtc.responder.js'></script>
+    <script type='text/javascript' src='../../src/rtc/rtc.mixer.js'></script>
+    <script type='text/javascript' src='../../src/rtc/rtc.audiomixer.js'></script>
+    <script type='text/javascript' src='../../src/rtc/rtc.videomixer.js'></script>
+    <script type='text/javascript' src='../../src/rtc/rtc.netconnection.js'></script>
+    <script type='text/javascript' src='../../src/rtc/rtc.netstream.js'></script>
+    <script type='text/javascript' src='../../src/io/io.js'></script>
+    <script type='text/javascript' src='../../src/io/io.fetch.js'></script>
+    <script type='text/javascript' src='../../src/io/io.mozstream.js'></script>
+    <script type='text/javascript' src='../../src/io/io.msstream.js'></script>
+    <script type='text/javascript' src='../../src/io/io.websocket.js'></script>
+    <script type='text/javascript' src='../../src/io/io.xhr.js'></script>
+    <script type='text/javascript' src='../../src/player/av/av.js'></script>
+    <script type='text/javascript' src='../../src/player/av/codec/codec.js'></script>
+    <script type='text/javascript' src='../../src/player/av/codec/codec.aac.js'></script>
+    <script type='text/javascript' src='../../src/player/av/codec/codec.avc.js'></script>
+    <script type='text/javascript' src='../../src/player/av/codec/codec.avc.sps.js'></script>
+    <script type='text/javascript' src='../../src/player/av/codec/codec.avc.pps.js'></script>
+    <script type='text/javascript' src='../../src/player/av/format/format.js'></script>
+    <script type='text/javascript' src='../../src/player/av/format/format.flv.js'></script>
+    <script type='text/javascript' src='../../src/player/av/format/format.fmp4.js'></script>
+    <script type='text/javascript' src='../../src/player/module/module.js'></script>
+    <script type='text/javascript' src='../../src/player/module/module.src.js'></script>
+    <script type='text/javascript' src='../../src/player/module/module.flv.js'></script>
+    <script type='text/javascript' src='../../src/player/module/module.fmp4.js'></script>
+    <script type='text/javascript' src='../../src/player/module/module.rtc.js'></script>
+    <script type='text/javascript' src='../../src/player/player.js'></script>
+    <script type='text/javascript' src='../../src/player/player.model.js'></script>
+    <script type='text/javascript' src='../../src/player/player.view.js'></script>
+    <script type='text/javascript' src='../../src/player/player.controller.js'></script>
+    <script type='text/javascript' src='../../src/player/ui/ui.js'></script>
+    <script type='text/javascript' src='../../src/player/ui/components/components.js'></script>
+    <script type='text/javascript' src='../../src/player/ui/components/components.button.js'></script>
+    <script type='text/javascript' src='../../src/player/ui/components/components.label.js'></script>
+    <script type='text/javascript' src='../../src/player/ui/components/components.preview.js'></script>
+    <script type='text/javascript' src='../../src/player/ui/components/components.select.js'></script>
+    <script type='text/javascript' src='../../src/player/ui/components/components.slider.js'></script>
+    <script type='text/javascript' src='../../src/player/ui/components/components.panel.js'></script>
+    <script type='text/javascript' src='../../src/player/ui/ui.poster.js'></script>
+    <script type='text/javascript' src='../../src/player/ui/ui.danmu.js'></script>
+    <script type='text/javascript' src='../../src/player/ui/ui.display.js'></script>
+    <script type='text/javascript' src='../../src/player/ui/ui.ad.js'></script>
+    <script type='text/javascript' src='../../src/player/ui/ui.share.js'></script>
+    <script type='text/javascript' src='../../src/player/ui/ui.logo.js'></script>
+    <script type='text/javascript' src='../../src/player/ui/ui.controlbar.js'></script>
+    <script type='text/javascript' src='../../src/player/ui/ui.contextmenu.js'></script>
+</head>
+
+<body ontouchstart=''>
+    <div id='player' style='margin: 40px auto 0; width: 100%; height: 400px; max-width: 640px; top: 0; left: 0;'>
+        <div class='pe-wrapper pe-ui-classic' mode='vod' state='ready' controls='always/motion/never' danmu='on' muted='false' fullpage='false' fullscreen='false'>
+            <div class='pe-content'>
+                <video></video>
+            </div>
+            <div class='pe-poster'>
+                <img src='image/poster.png' />
+            </div>
+            <div class='pe-danmu'>
+                <div></div>
+            </div>
+            <div class='pe-display'>
+                <div>
+                    <span class='pe-button play'></span>
+                    <span class='pe-button waiting'></span>
+                    <span class='pe-label error'></span>
+                    <div class='pe-panel info'>
+                        <div></div>
+                    </div>
+                    <div class='pe-panel stats'>
+                        <div></div>
+                    </div>
+                </div>
+            </div>
+            <div class='pe-ad'></div>
+            <div class='pe-share'></div>
+            <div class='pe-logo' style='margin: 3% 5%; top: 0px; right: 0px; width: 36px; height: 36px; visibility: visible;'>
+                <a href="https://www.oddcancer.com/product/player.html" target="_blank" style="background: url(image/logo.png);"></a>
+            </div>
+            <div class='pe-controlbar' style='display: block;'>
+                <div>
+                    <div class='pe-slider timebar'>
+                        <div class='pe-tooltip preview'>
+                            <div>
+                                <img src='image/poster.png' />
+                                <img src='image/poster.png' />
+                                <img src='image/poster.png' />
+                                <img src='image/poster.png' />
+                                <img src='image/poster.png' />
+                                <img src='image/poster.png' />
+                            </div>
+                        </div>
+                        <div class='pe-slider-content'>
+                            <span class='pe-tooltip value'>--:--</span>
+                            <span class='pe-slider-rail background'></span>
+                            <span class='pe-slider-rail progress'></span>
+                            <span class='pe-slider-rail position' style='width: 0%;'></span>
+                            <span class='pe-slider-thumb' style='left: 0%;'>
+                                <span></span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class='pe-left'>
+                        <span class='pe-button play'>
+                            <span class='pe-tooltip'>Play</span>
+                        </span>
+                        <span class='pe-button pause'>
+                            <span class='pe-tooltip'>Pause</span>
+                        </span>
+                        <span class='pe-button stop'>
+                            <span class='pe-tooltip'>Stop</span>
+                        </span>
+                        <span class='pe-button reload'>
+                            <span class='pe-tooltip'>Reload</span>
+                        </span>
+                        <span class='pe-label quote'>Live broadcast</span>
+                        <span class='pe-label time'>00:00/00:00</span>
+                    </div>
+                    <div class='pe-center'></div>
+                    <div class='pe-right'>
+                        <span class='pe-button report'>
+                            <span class='pe-tooltip'>Report</span>
+                        </span>
+                        <span class='pe-button capture'>
+                            <span class='pe-tooltip'>Capture</span>
+                        </span>
+                        <span class='pe-button mute'>
+                            <span class='pe-tooltip'>Mute</span>
+                        </span>
+                        <span class='pe-button unmute'>
+                            <span class='pe-tooltip'>Unmute</span>
+                        </span>
+                        <div class='pe-slider volumebar'>
+                            <div class='pe-slider-content'>
+                                <span class='pe-tooltip value'>80</span>
+                                <span class='pe-slider-rail background'></span>
+                                <span class='pe-slider-rail progress'></span>
+                                <span class='pe-slider-rail position' style='width: 80%;'></span>
+                                <span class='pe-slider-thumb' style='left: 80%;'>
+                                    <span></span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class='pe-select definition' value='2'>
+                            <span class='pe-tooltip'>Definition</span>
+                            <span class='pe-select-text'>HD</span>
+                            <div class='pe-select-menu' style='left: 0px;'>
+                                <span class='pe-select-menu-option' value='0'>LOW</span>
+                                <span class='pe-select-menu-option' value='1'>HIGH</span>
+                                <span class='pe-select-menu-option selected' value='2'>HD</span>
+                            </div>
+                        </div>
+                        <span class='pe-button danmuoff'>
+                            <span class='pe-tooltip'>Danmu Off</span>
+                        </span>
+                        <span class='pe-button danmuon'>
+                            <span class='pe-tooltip'>Danmu On</span>
+                        </span>
+                        <span class='pe-button fullpage'>
+                            <span class='pe-tooltip'>Fullpage</span>
+                        </span>
+                        <span class='pe-button exitfullpage'>
+                            <span class='pe-tooltip'>Exit Fullpage</span>
+                        </span>
+                        <span class='pe-button fullscreen'>
+                            <span class='pe-tooltip'>Fullscreen</span>
+                        </span>
+                        <span class='pe-button exitfullscreen'>
+                            <span class='pe-tooltip'>Exit Fullscreen</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class='pe-contextmenu' style='display: block;'>
+                <table>
+                    <tr class='pe-contextmenu-item featured'>
+                        <td>
+                            <span class='pe-contextmenu-item-icon'>
+                                <a style='background-image: url(https://www.oddcancer.com/image/odd-player-logo.png);'></a>
+                            </span>
+                        </td>
+                        <td><span class='pe-contextmenu-item-text'>odd.js/2.0.00</span></td>
+                        <td><span class='pe-contextmenu-item-shortcut'></span></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class='input-container' style='width: 100%; max-width: 640px;'>
+        <span>
+            <input id='url' autocapitalize='off' value='https://www.oddcancer.com/vod/sample.flv'>
+        </span>
+        <a class='btn red' onclick='onPlayClick();'>Play</a>
+    </div>
+
+    <script type='text/javascript' src='js/main.js'></script>
+</body>
+
+</html>

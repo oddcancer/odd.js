@@ -1,0 +1,13 @@
+﻿@import url("global.css") screen;
+
+
+/**
+ * dialog
+ */
+
+#dialog {
+	margin: 0 auto;
+	width: 400px;
+	height: 600px;
+}
+

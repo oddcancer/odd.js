@@ -1,0 +1,241 @@
+.im-wrapper {
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    background: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.im-wrapper * {
+    margin: 0px;
+    padding: 0px;
+    /* font-family: Microsoft YaHei, Arial, sans-serif; */
+    font-size: 14px;
+    font-weight: normal;
+    box-sizing: content-box;
+}
+
+.im-ui-classic {
+    display: flex;
+	flex-direction: column;
+}
+
+.im-ui-classic .im-emoji {
+    font-size: 24px;
+    line-height: 24px;
+}
+
+.im-ui-classic .im-button,
+.im-ui-classic .im-select {
+    text-align: center;
+    white-space: nowrap;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+.im-ui-classic .im-select {
+    position: relative;
+}
+
+.im-ui-classic .im-select .im-select-text {
+    color: #454545;
+}
+
+@media(hover:hover) {
+.im-ui-classic .im-select:hover .im-select-text {
+    color: #00a0e9;
+}
+}
+.im-ui-classic .im-select:active .im-select-text {
+    color: #00a0e9;
+}
+
+.im-ui-classic .im-select .im-select-menu {
+    bottom: 100%;
+    position: absolute;
+    background: #ffffff;
+    cursor: pointer;
+    visibility: hidden;
+}
+
+.im-ui-classic .im-select .im-select-menu .im-select-option {
+    white-space: nowrap;
+    display: block;
+}
+
+.im-ui-classic .im-select .im-select-menu .im-select-option:hover,
+.im-ui-classic .im-select .im-select-menu .im-select-option.selected {
+    color: #00a0e9;
+}
+
+.im-ui-classic .im-content {
+    margin-bottom: 10px;
+    padding: 10px;
+    height: 100%;
+    line-height: 24px;
+    border-bottom: 1px solid #e5e4e4;
+    position: relative;
+    flex-grow: 1;
+    text-align: -webkit-match-parent;
+    overflow: hidden;
+}
+
+.im-ui-classic .im-content .im-content-time {
+    text-align: center;
+}
+
+.im-ui-classic .im-content .im-content-item {
+    padding: 5px 10px;
+}
+
+.im-ui-classic .im-content .im-content-item > * {
+    vertical-align: middle;
+}
+
+.im-ui-classic .im-content .im-content-item .im-level {
+    margin-right: 5px;
+    padding: 0 4px;
+    font-size: 12px;
+    line-height: 18px;
+    color: #3cafab;
+    border: 1px solid #3cafab;
+    border-radius: 2px;
+}
+
+.im-ui-classic .im-content .im-content-item .im-level .vip1,
+.im-ui-classic .im-content .im-content-item .im-level .vip2,
+.im-ui-classic .im-content .im-content-item .im-level .vip3 {
+    color: #3cafab;
+    border-color: #3cafab;
+}
+
+.im-ui-classic .im-content .im-content-item .im-level .vip4,
+.im-ui-classic .im-content .im-content-item .im-level .vip5,
+.im-ui-classic .im-content .im-content-item .im-level .vip6,
+.im-ui-classic .im-content .im-content-item .im-level .vip7 {
+    color: #77c773;
+    border-color: #77c773;
+}
+
+.im-ui-classic .im-content .im-content-item .im-level .admin {
+    color: #5382e2;
+    border-color: #5382e2;
+}
+
+.im-ui-classic .im-content .im-content-item .im-level .su-admin {
+    color: #f76767;
+    border-color: #f76767;
+}
+
+.im-ui-classic .im-content .im-content-item .im-badge {
+    margin-right: 5px;
+    width: 18px;
+    height: 18px;
+    display: inline-block;
+}
+
+.im-ui-classic .im-content .im-content-item .im-nick {
+    margin-right: 5px;
+    color: #2b94ff;
+}
+
+.im-ui-classic .im-content .im-content-item .im-separator {
+    margin-right: 5px;
+    color: #333333;
+}
+
+.im-ui-classic .im-content .im-content-item .im-body {
+    color: #333333;
+    word-break: break-all;
+    word-wrap: break-word;
+}
+
+.im-ui-classic .im-display {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.im-ui-classic .im-toolbar {
+    padding: 0 10px;
+    height: 0px;
+    position: relative;
+    flex-grow: 0;
+}
+
+.im-ui-classic .im-toolbar > * {
+    float: left;
+}
+
+.im-ui-classic .im-toolbar .emojipicker {
+    margin: 0;
+}
+
+.im-ui-classic .im-toolbar .emojipicker .im-select-text {
+    margin: 5px 0;
+    padding: 8px;
+    font-size: 24px;
+    line-height: 24px;
+    border-right: 1px solid #449d44;
+}
+
+.im-ui-classic .im-toolbar .emojipicker .im-select-menu {
+    padding: 9px;
+    width: 360px;
+    max-height: 400px;
+    overflow: hidden scroll;
+    border: 1px solid #e5e4e4;
+    border-radius: 4px;
+}
+
+.im-ui-classic .im-toolbar .emojipicker .im-select-menu .im-select-option {
+    float: left;
+    padding: 8px;
+    font-size: 24px;
+    line-height: 24px;
+    border-radius: 4px;
+}
+
+.im-ui-classic .im-toolbar .emojipicker .im-select-menu .im-select-option:hover {
+    background-color: #efefef;
+}
+
+.im-ui-classic .im-input {
+    padding: 0 10px 10px;
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+    flex-grow: 0;
+}
+
+.im-ui-classic .im-input textarea {
+    padding: 4px 10px 4px 50px;
+    height: 40px;
+    line-height: 20px;
+    border: 1px solid #449d44;
+    border-right: 0;
+    border-radius: 4px 0 0 4px;
+    outline: none;
+    resize: none;
+    flex-grow: 1;
+}
+
+.im-ui-classic .im-input .im-button {
+    padding: 0 10px;
+    height: 50px;
+    line-height: 50px;
+	color: #FFFFFF;
+    background-color: #449d44;
+    border-radius: 0 4px 4px 0;
+    flex-grow: 0;
+}
+
+.im-ui-classic .im-input .im-button:hover {
+    background-color: #52BD52;
+}

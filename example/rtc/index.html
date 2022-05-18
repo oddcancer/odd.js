@@ -1,0 +1,217 @@
+﻿<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>odd.js - WebRTC Example</title>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta name="format-detection" content="telephone=no,email=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-touch-fullscreen" content="yes" />
+    <meta name="x5-fullscreen" content="true" />
+    <meta name="App-Config" content="fullscreen=yes, useHistoryState=yes, transition=yes" />
+
+    <link type='text/css' rel='stylesheet' href='css/style.css' />
+
+    <!-- <script type='text/javascript' src='../../release/odd.common.min.js'></script> -->
+    <!-- <script type='text/javascript' src='../../release/odd.im.min.js'></script> -->
+    <!-- <script type='text/javascript' src='../../release/odd.rtc.min.js'></script> -->
+    <script type='text/javascript' src='../../src/odd.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.amf.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.bitstream.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.browser.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.crypt.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.css.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.endian.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.filesaver.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.golomb.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.logger.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.url.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.xml2json.js'></script>
+    <script type='text/javascript' src='../../src/utils/mpd/mpd.js'></script>
+    <script type='text/javascript' src='../../src/utils/mpd/mpd.matchers.js'></script>
+    <script type='text/javascript' src='../../src/utils/mpd/mpd.matchers.datetime.js'></script>
+    <script type='text/javascript' src='../../src/utils/mpd/mpd.matchers.duration.js'></script>
+    <script type='text/javascript' src='../../src/utils/mpd/mpd.matchers.numeric.js'></script>
+    <script type='text/javascript' src='../../src/utils/mpd/mpd.matchers.string.js'></script>
+    <script type='text/javascript' src='../../src/events/events.js'></script>
+    <script type='text/javascript' src='../../src/events/events.eventdispatcher.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.streamsaver.js'></script>
+    <script type='text/javascript' src='../../src/utils/utils.timer.js'></script>
+    <script type='text/javascript' src='../../src/im/im.js'></script>
+    <script type='text/javascript' src='../../src/im/message/message.js'></script>
+    <script type='text/javascript' src='../../src/im/message/message.abort.js'></script>
+    <script type='text/javascript' src='../../src/im/message/message.ackwindowsize.js'></script>
+    <script type='text/javascript' src='../../src/im/message/message.ack.js'></script>
+    <script type='text/javascript' src='../../src/im/message/message.command.js'></script>
+    <script type='text/javascript' src='../../src/im/message/message.usercontrol.js'></script>
+    <script type='text/javascript' src='../../src/im/im.state.js'></script>
+    <script type='text/javascript' src='../../src/im/im.responder.js'></script>
+    <script type='text/javascript' src='../../src/im/im.netconnection.js'></script>
+    <script type='text/javascript' src='../../src/im/im.netstream.js'></script>
+    <script type='text/javascript' src='../../src/rtc/rtc.js'></script>
+    <script type='text/javascript' src='../../src/rtc/rtc.constraints.js'></script>
+    <script type='text/javascript' src='../../src/rtc/rtc.state.js'></script>
+    <script type='text/javascript' src='../../src/rtc/rtc.stats.js'></script>
+    <script type='text/javascript' src='../../src/rtc/rtc.signal.js'></script>
+    <script type='text/javascript' src='../../src/rtc/rtc.responder.js'></script>
+    <script type='text/javascript' src='../../src/rtc/rtc.mixer.js'></script>
+    <script type='text/javascript' src='../../src/rtc/rtc.audiomixer.js'></script>
+    <script type='text/javascript' src='../../src/rtc/rtc.videomixer.js'></script>
+    <script type='text/javascript' src='../../src/rtc/rtc.netconnection.js'></script>
+    <script type='text/javascript' src='../../src/rtc/rtc.netstream.js'></script>
+</head>
+
+<body ontouchstart=''>
+    <div class='wrap'>
+        <div class=''>
+            <section>
+                <div class='rtc-parameters'>
+                    <div class='row'>
+                        <span>
+                            <label>Channel:</label>
+                            <input id='in_chan' value='001'>
+                        </span>
+                        <span>
+                            <label>Nick:</label>
+                            <input id='in_nick'>
+                        </span>
+                    </div>
+                </div>
+                <div class='toolbar'>
+                    <a class='btn green' onclick='onJoinClick();'>Join</a>
+                    <a class='btn red' onclick='onLeaveClick();'>Leave</a>
+                </div>
+                <div class='rtc-parameters'>
+                    <div class='row'>
+                        <span>
+                            <label>Mode:</label>
+                            <select id='sl_mode'>
+                                <option value="0">User Media</option>
+                                <option value="1">Screen Sharing</option>
+                                <option value="2">Screen & User Media</option>
+                            </select>
+                        </span>
+                        <span>
+                            <label>Profiles:</label>
+                            <select id='sl_profiles'></select>
+                        </span>
+                        <span>
+                            <label style="width: 50%;"><input id='ch_enablevideo' type='checkbox' checked>Video</label>
+                            <label style="width: 50%;"><input id='ch_enableaudio' type='checkbox' checked>Audio</label>
+                        </span>
+                    </div>
+                    <div class='row'>
+                        <span>
+                            <label>Cameras:</label>
+                            <select id='sl_cameras'></select>
+                        </span>
+                        <span>
+                            <label>Microphones:</label>
+                            <select id='sl_microphones'></select>
+                        </span>
+                    </div>
+                </div>
+                <div class='toolbar'>
+                    <a class='btn green' onclick='onPublishClick();'>Publish</a>
+                    <a class='btn red' onclick='onUnpublishClick();'>Unpublish</a>
+                </div>
+                <div class='toolbar'>
+                    <a class='btn white' onclick='onChangeProfileClick();'>Change Profile</a>
+                    <a class='btn white' onclick='onChangeCameraClick();'>Change Camera</a>
+                    <a class='btn white' onclick='onChangeMicrophoneClick();'>Change Microphone</a>
+                </div>
+                <div class='rtc-parameters'>
+                    <div class='row'>
+                        <span>
+                            <label>Data:</label>
+                            <input id='in_data'>
+                        </span>
+                    </div>
+                </div>
+                <div class='toolbar'>
+                    <a class='btn green' onclick='onPlayClick();'>Play</a>
+                    <a class='btn red' onclick='onStopClick();'>Stop</a>
+                </div>
+                <div id='view'></div>
+            </section>
+        </div>
+    </div>
+
+    <script type='text/javascript' src='js/main.js'></script>
+    <script type='text/javascript'>
+        var self = {};
+
+        var im = odd.im.create();
+        im.addEventListener(Event.READY, onReady);
+        im.addEventListener(NetStatusEvent.NET_STATUS, onIMStatus);
+        im.setup({
+            url: 'wss://' + location.host + '/im',
+        });
+
+        async function onJoinClick(e) {
+            await im.join(in_chan.value);
+        }
+
+        function onReady(e) {
+            im.logger.log('onReady');
+        }
+
+        function onIMStatus(e) {
+            var level = e.data.level;
+            var code = e.data.code;
+            var description = e.data.description;
+            var info = e.data.info;
+            var method = { status: 'log', warning: 'warn', error: 'error' }[level];
+            im.logger[method](`onStatus: level=${level}, code=${code}, description=${description}, info=`, info);
+
+            switch (code) {
+                case Code.NETGROUP_CONNECT_SUCCESS:
+                    self = info.user;
+                    in_nick.value = info.user.nick;
+                    break;
+                case Code.NETGROUP_NEIGHBOR_CONNECT:
+                    if (_publisher && _publisher.stream) {
+                        im.sendUserControl(0, null, {
+                            type: 'published',
+                            cast: 'uni',
+                            to: info.user.id,
+                            stream: _publisher.stream.id,
+                        });
+                    }
+                    break;
+                case Code.NETGROUP_SENDTO_NOTIFY:
+                case Code.NETGROUP_POSTING_NOTIFY:
+                    onUserControl(info);
+                    break;
+            }
+        }
+
+        async function onUserControl(m) {
+            var info = m.Info;
+            var user = info.user;
+
+            switch (info.type) {
+                case 'published':
+                    if (user.id !== self.id) {
+                        await play(info.stream);
+                    }
+                    break;
+                default:
+                    im.logger.log(info);
+                    break;
+            }
+        }
+
+        async function onLeaveClick(e) {
+            rtc.unpublish();
+            rtc.stopAll();
+            await im.leave(in_chan.value);
+        }
+    </script>
+</body>
+
+</html>
