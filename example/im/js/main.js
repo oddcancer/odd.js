@@ -2,10 +2,14 @@ dialog.innerHTML = '';
 
 var utils = odd.utils,
     events = odd.events,
-    Event = events.Event;
+    NetStatusEvent = events.NetStatusEvent,
+    Level = events.Level,
+    Code = events.Code;
+
+var users = {};
 
 var ui = odd.im.ui.create({ mode: 'file' });
-ui.addEventListener(Event.READY, onReady);
+ui.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
 ui.setup(dialog, {
     url: 'wss://' + location.host + '/im',
     maxRetries: -1,
@@ -28,6 +32,24 @@ ui.setup(dialog, {
     ui.logger.error(`Failed to setup: ${err}`);
 });
 
-function onReady(e) {
-    // ui.record('fragmented.mp4');
+function onNetStatus(e) {
+    var level = e.data.level;
+    var code = e.data.code;
+    var description = e.data.description;
+    var info = e.data.info;
+
+    switch (code) {
+        case Code.NETGROUP_LOCALCOVERAGE_NOTIFY:
+            users = utils.extendz(info.table, users);
+            ui.logger.log(`Online: ${Object.keys(users).length}`);
+            break;
+        case Code.NETGROUP_NEIGHBOR_CONNECT:
+            users[info.user.id] = info.user;
+            ui.logger.log(`Online: ${Object.keys(users).length}`);
+            break;
+        case Code.NETGROUP_NEIGHBOR_DISCONNECT:
+            delete users[info.user.id];
+            ui.logger.log(`Online: ${Object.keys(users).length}`);
+            break;
+    }
 }
