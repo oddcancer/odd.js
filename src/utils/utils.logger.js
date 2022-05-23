@@ -136,28 +136,30 @@
         }
 
         _this.flush = function () {
-            switch (_this.config.mode) {
-                case Mode.FILE:
-                    var date = new Date();
-                    var time = date.getFullYear() +
-                        utils.padStart(date.getMonth() + 1, 2, '0') +
-                        utils.padStart(date.getDate(), 2, '0') + '-' +
-                        utils.padStart(date.getHours(), 2, '0') +
-                        utils.padStart(date.getMinutes(), 2, '0') +
-                        utils.padStart(date.getSeconds(), 2, '0') + '.' +
-                        utils.padStart(date.getMilliseconds(), 3, '0');
-                    utils.forEach(_lines, function (i, line) {
-                        _saver.append(line + '\n');
-                    });
-                    _saver.save('odd-' + time + '.log');
-                    break;
+            if (_lines.length) {
+                switch (_this.config.mode) {
+                    case Mode.FILE:
+                        var date = new Date();
+                        var time = date.getFullYear() +
+                            utils.padStart(date.getMonth() + 1, 2, '0') +
+                            utils.padStart(date.getDate(), 2, '0') + '-' +
+                            utils.padStart(date.getHours(), 2, '0') +
+                            utils.padStart(date.getMinutes(), 2, '0') +
+                            utils.padStart(date.getSeconds(), 2, '0') + '.' +
+                            utils.padStart(date.getMilliseconds(), 3, '0');
+                        utils.forEach(_lines, function (i, line) {
+                            _saver.append(line + '\n');
+                        });
+                        _saver.save('odd-' + time + '.log');
+                        break;
 
-                case Mode.FEEDBACK:
-                    _xhr.open('POST', _this.config.url, true);
-                    _xhr.send(JSON.stringify(_lines));
-                    break;
+                    case Mode.FEEDBACK:
+                        _xhr.open('POST', _this.config.url, true);
+                        _xhr.send(JSON.stringify(_lines));
+                        break;
+                }
+                _lines = [];
             }
-            _lines = [];
         };
 
         function _onLoad(e) {
