@@ -179,7 +179,7 @@
                             type: 'published',
                             cast: 'uni',
                             to: info.user.id,
-                            stream: _publisher.stream.id,
+                            stream: _publisher.stream.id + '@' + location.host + '/rtc/sig',
                         });
                     }
                     break;
