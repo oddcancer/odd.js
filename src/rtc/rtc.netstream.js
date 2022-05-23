@@ -13,7 +13,7 @@
         Signal = RTC.Signal,
 
         _default = {
-            address: '',
+            ip: '',
         },
         _constraints = utils.extendz({}, {
             audio: {
@@ -328,8 +328,8 @@
                 });
                 switch (candidate.type) {
                     case 'host':
-                        if (_this.config.address) {
-                            m.data.candidate = m.data.candidate.replace(candidate.address, _this.config.address);
+                        if (_this.config.ip) {
+                            m.data.candidate = m.data.candidate.replace(candidate.address, _this.config.ip);
                             candidate = new RTCIceCandidate({
                                 candidate: m.data.candidate,
                                 sdpMid: m.data.sdpMid || '',

@@ -265,7 +265,7 @@
         var originalClasses = utils.typeOf(element.className) === 'string' ? element.className.split(' ') : [];
         var removeClasses = utils.typeOf(classes) === 'array' ? classes : classes.split(' ');
 
-        utils.foreach(removeClasses, function (n, c) {
+        utils.forEach(removeClasses, function (n, c) {
             var index = utils.indexOf(originalClasses, c);
             if (index >= 0) {
                 originalClasses.splice(index, 1);
