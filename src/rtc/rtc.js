@@ -217,7 +217,6 @@
         };
 
         function _onStatus(e) {
-            var ns = e.target;
             var level = e.data.level;
             var code = e.data.code;
             var description = e.data.description;
@@ -234,6 +233,7 @@
                 case Code.NETSTREAM_FAILED:
                 case Code.NETSTREAM_PLAY_RESET:
                 case Code.NETSTREAM_PLAY_FAILED:
+                    var ns = e.target;
                     ns.close(e.data.description);
                     break;
             }

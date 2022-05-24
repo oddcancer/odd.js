@@ -121,7 +121,7 @@
         };
 
         function _getLine(level, args) {
-            var line = utils.date2utc(new Date()) + ' ' + Prefix[level];
+            var line = utils.date2string(new Date()) + ' ' + Prefix[level];
             utils.forEach(args, function (i, item) {
                 switch (utils.typeOf(item)) {
                     case 'object':
