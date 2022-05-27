@@ -7,7 +7,7 @@
 > Skype: live:670292548  
 > Email: 670292548@qq.com  
 
-This is not only an [HTML5 FLV Player](https://github.com/oddcancer/odd.js#roadmap), which supports HTTP/WS-FLV live streaming, but also supports HTTP/WS-fMP4, MPEG-DASH, HLS and Original HTML5 Media Resources (eg. Ogg, Mpeg4, WebM), with an independent UI framework.  
+This is not only an [HTML5 FLV Player](https://github.com/oddcancer/odd.js#roadmap), which supports HTTP/WS-FLV live streaming, but also supports HTTP/WS-fMP4, MPEG-DASH, HLS and other Original HTML5 Media Resources (eg. Ogg, Mpeg4, WebM), with an independent UI framework.  
 
 Note:  
 
@@ -25,12 +25,12 @@ If you are interested in this player, and or solutions about live media streamin
 
 ### Core Modules
 
-- [x] SRC (original html5 media resources, eg. Ogg, Mpeg4, WebM, etc.)  
+- [x] SRC (original html5 media resources, eg. Ogg, Mpeg4, WebM, and HLS on mobile, etc.)  
 - [x] FLV (http/ws)  
 - [x] FMP4 (http/ws)  
 - [ ] DASH (ll-cmaf)  
 - [ ] HLS (ll-cmaf)  
-- [ ] RTC  
+- [x] RTC  
 - [ ] ~~Flash~~  
 
 ### UI Plugins
@@ -67,14 +67,16 @@ If you are interested in this player, and or solutions about live media streamin
   - [ ] Log feedback.  
 - [x] v2.1.73 - New module[s]: FMP4.  
 - [x] v2.1.93 - Fix sps parsing issue caused log2_max_frame_num_minus4 out of range.  
+- [x] v2.2.22 - Implemented rtc sdk.  
+- [x] v2.3.01 - Refactor im & rtc into one.  
+- [x] v2.3.17 - New module[s]: RTC.  
 - [ ] Breakpoint download for http-flv playback (Send a HEAD request at first).  
 - [ ] Experience statistics and analysis.  
 
 ## Solutions
 
 - [x] [Live Broadcast](https://www.oddcancer.com/solution/live.html).  
-- [x] [Live Broadcast on Mobile](https://www.oddcancer.com/solution/live-mobile.html).  
-- [x] [Monitor Example](https://www.oddcancer.com/solution/monitor.html?n=9).  
+- [x] [VoD](https://www.oddcancer.com/solution/live.html).  
 
 ## Example
 
