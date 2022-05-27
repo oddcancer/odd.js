@@ -75,7 +75,7 @@
                     break;
             }
 
-            _this.append(Level.LOG, ['Version: odd/' + odd().version]);
+            _this.append(Level.LOG, ['Version: odd.js/' + odd().version]);
             _this.append(Level.LOG, ['OS:      ' + OS.name + '/' + OS.version + (OS.model ? '; ' + OS.model : '')]);
             _this.append(Level.LOG, ['Kernel:  ' + Kernel.name + '/' + Kernel.version]);
             _this.append(Level.LOG, ['Browser: ' + Browser.name + '/' + Browser.version]);
