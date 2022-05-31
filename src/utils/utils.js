@@ -275,6 +275,10 @@
         element.className = utils.trim(originalClasses.join(' '));
     };
 
+    utils.reflow = function (element) {
+        void element.offsetWidth;
+    };
+
     utils.emptyElement = function (element) {
         while (element.firstChild) {
             element.removeChild(element.firstChild);

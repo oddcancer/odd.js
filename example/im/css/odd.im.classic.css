@@ -13,12 +13,12 @@
     /* font-family: Microsoft YaHei, Arial, sans-serif; */
     font-size: 14px;
     font-weight: normal;
-    box-sizing: content-box;
+    box-sizing: border-box;
 }
 
 .im-ui-classic {
     display: flex;
-	flex-direction: column;
+    flex-direction: column;
 }
 
 .im-ui-classic .im-emoji {
@@ -48,10 +48,11 @@
 }
 
 @media(hover:hover) {
-.im-ui-classic .im-select:hover .im-select-text {
-    color: #00a0e9;
+    .im-ui-classic .im-select:hover .im-select-text {
+        color: #00a0e9;
+    }
 }
-}
+
 .im-ui-classic .im-select:active .im-select-text {
     color: #00a0e9;
 }
@@ -87,14 +88,16 @@
 }
 
 .im-ui-classic .im-content .im-content-time {
+    color: #BDBDBD;
     text-align: center;
 }
 
 .im-ui-classic .im-content .im-content-item {
-    padding: 5px 10px;
+    margin: 5px 10px;
+    overflow: hidden;
 }
 
-.im-ui-classic .im-content .im-content-item > * {
+.im-ui-classic .im-content .im-content-item>* {
     vertical-align: middle;
 }
 
@@ -165,16 +168,21 @@
 .im-ui-classic .im-toolbar {
     padding: 0 10px;
     height: 0px;
-    position: relative;
     flex-grow: 0;
 }
 
-.im-ui-classic .im-toolbar > * {
+.im-ui-classic .im-toolbar>* {
     float: left;
 }
 
 .im-ui-classic .im-toolbar .emojipicker {
     margin: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 60px;
+    left: 0;
+    pointer-events: none;
 }
 
 .im-ui-classic .im-toolbar .emojipicker .im-select-text {
@@ -183,15 +191,23 @@
     font-size: 24px;
     line-height: 24px;
     border-right: 1px solid #449d44;
+    position: absolute;
+    bottom: -50px;
+    left: 10px;
+    pointer-events: all;
 }
 
 .im-ui-classic .im-toolbar .emojipicker .im-select-menu {
     padding: 9px;
-    width: 360px;
+    width: calc(100% - 20px);
+    height: calc(100% - 10px);
     max-height: 400px;
     overflow: hidden scroll;
     border: 1px solid #e5e4e4;
     border-radius: 4px;
+    bottom: 0;
+    left: 10px;
+    pointer-events: all;
 }
 
 .im-ui-classic .im-toolbar .emojipicker .im-select-menu .im-select-option {
@@ -208,7 +224,7 @@
 
 .im-ui-classic .im-input {
     padding: 0 10px 10px;
-    height: 50px;
+    height: 60px;
     display: flex;
     flex-direction: row;
     flex-grow: 0;
@@ -216,7 +232,7 @@
 
 .im-ui-classic .im-input textarea {
     padding: 4px 10px 4px 50px;
-    height: 40px;
+    height: 50px;
     line-height: 20px;
     border: 1px solid #449d44;
     border-right: 0;
@@ -230,7 +246,7 @@
     padding: 0 10px;
     height: 50px;
     line-height: 50px;
-	color: #FFFFFF;
+    color: #FFFFFF;
     background-color: #449d44;
     border-radius: 0 4px 4px 0;
     flex-grow: 0;

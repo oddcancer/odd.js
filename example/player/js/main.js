@@ -56,7 +56,7 @@ ui.setup(player, {
     }],
     plugins: [{
         kind: 'Poster',
-        file: 'image/poster.png',
+        file: 'image/solution-vod-poster.png',
         cors: 'anonymous',    // anonymous, use-credentials
         objectfit: 'contain', // fill, contain, cover, none, scale-down
         visibility: true,
