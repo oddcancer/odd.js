@@ -716,10 +716,6 @@
     margin-right: 8px;
 }
 
-.pe-ui-classic .pe-controlbar .pe-select.definition .pe-select-menu .pe-select-menu-option {
-    min-width: 60px;
-}
-
 .pe-ui-classic .pe-controlbar .pe-button.danmuoff,
 .pe-ui-classic .pe-controlbar .pe-button.danmuon {
     margin-right: 4px;
