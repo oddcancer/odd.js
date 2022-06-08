@@ -64,6 +64,7 @@
     left: 0px;
     position: absolute;
     cursor: default;
+    pointer-events: none;
     visibility: hidden;
 }
 
