@@ -14,6 +14,10 @@
 
         _default = {
             ip: '',
+            codecpreferences: [
+                'audio/opus',
+                'video/VP8',
+            ],
         },
         _constraints = utils.extendz({}, {
             audio: {
@@ -155,6 +159,33 @@
         }
 
         _this.publish = async function () {
+            var audiocodecs = [];
+            var videocodecs = [];
+            RTCRtpSender.getCapabilities('audio').codecs.forEach(function (codec) {
+                for (var i = 0; i < _this.config.codecpreferences.length; i++) {
+                    if (_this.config.codecpreferences[i] === codec.mimeType) {
+                        audiocodecs.push(codec);
+                    }
+                }
+            });
+            RTCRtpSender.getCapabilities('video').codecs.forEach(function (codec) {
+                for (var i = 0; i < _this.config.codecpreferences.length; i++) {
+                    if (_this.config.codecpreferences[i] === codec.mimeType) {
+                        videocodecs.push(codec);
+                    }
+                }
+            });
+            _pc.getTransceivers().forEach(function (transceiver) {
+                switch (transceiver.sender.track.kind) {
+                    case 'audio':
+                        transceiver.setCodecPreferences(audiocodecs);
+                        break;
+                    case 'video':
+                        transceiver.setCodecPreferences(videocodecs);
+                        break;
+                }
+            });
+
             try {
                 var offer = await _pc.createOffer();
                 _logger.log(`createOffer success: id=${_id}, sdp=\n${offer.sdp}`);

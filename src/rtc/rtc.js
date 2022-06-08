@@ -15,6 +15,7 @@
             ip: '',
             profile: '720P_1',
             url: 'wss://' + location.host + '/rtc/sig',
+            codecpreferences: [],
             rtcconfiguration: {},
         };
 
@@ -91,7 +92,10 @@
         };
 
         _this.publish = async function (screensharing, withcamera, option, callback) {
-            _publisher = new RTC.NetStream({ ip: _this.config.ip }, _logger);
+            _publisher = new RTC.NetStream({
+                ip: _this.config.ip,
+                codecpreferences: _this.config.codecpreferences,
+            }, _logger);
             _publisher.addEventListener(NetStatusEvent.NET_STATUS, _onStatus);
             _publisher.addEventListener(Event.CLOSE, _onCloseStream);
             _publisher.applyConstraints(_this.constraints);
@@ -186,7 +190,10 @@
                 return Promise.reject('playing');
             }
 
-            var ns = new RTC.NetStream({ ip: _this.config.ip }, _logger);
+            var ns = new RTC.NetStream({
+                ip: _this.config.ip,
+                codecpreferences: _this.config.codecpreferences,
+            }, _logger);
             ns.addEventListener(NetStatusEvent.NET_STATUS, _onStatus);
             ns.addEventListener(Event.CLOSE, _onCloseStream);
             try {
