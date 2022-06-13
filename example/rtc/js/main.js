@@ -17,8 +17,13 @@ var rtc = odd.rtc.create({ mode: 'feedback', url: 'https://fc.oddcancer.com/rtc/
 rtc.addEventListener(NetStatusEvent.NET_STATUS, onRTCStatus);
 rtc.addEventListener(Event.CLOSE, console.log);
 rtc.setup({
-    url: 'wss://' + location.host + '/rtc/sig',
-    profile: sl_profiles.value,
+    // url: 'wss://' + location.host + '/rtc/sig',
+    url: 'wss://www.oddcancer.com/rtc/sig',
+    profile: sl_profiles.value || '180P_1',
+    codecpreferences: [
+        'audio/opus',
+        'video/VP8',
+    ],
 });
 
 (async function () {
@@ -31,7 +36,7 @@ function getProfiles() {
     for (var i = 0; i < labels.length; i++) {
         var label = labels[i];
         var option = utils.createElement('option');
-        option.selected = i === 2 ? 'selected' : undefined;
+        option.selected = i === 4 ? 'selected' : undefined;
         option.value = label;
         option.innerHTML = label;
         sl_profiles.appendChild(option);

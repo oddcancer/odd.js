@@ -44,7 +44,7 @@
 
         _this.setup = async function (config) {
             _this.config = utils.extendz({ id: _id }, _default, config);
-            _this.constraints = utils.extendz({}, RTC.NetStream.CONF, RTC.Constraints[_this.config.profile]);
+            _this.constraints = utils.extendz({}, RTC.NetStream.prototype.CONF, RTC.Constraints[_this.config.profile]);
 
             _nc = new RTC.NetConnection(_this.config.rtcconfiguration, _logger);
             _nc.addEventListener(NetStatusEvent.NET_STATUS, _onStatus);
@@ -68,7 +68,7 @@
 
         _this.setProfile = function (profile) {
             _this.config.profile = profile;
-            _this.constraints = utils.extendz({}, RTC.NetStream.CONF, RTC.Constraints[_this.config.profile]);
+            _this.constraints = utils.extendz(_this.constraints, RTC.Constraints[_this.config.profile]);
         };
 
         _this.setFramerate = function (fps) {
