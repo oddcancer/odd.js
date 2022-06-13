@@ -1,6 +1,14 @@
 (function (odd) {
     var utils = odd.utils,
+        OS = odd.OS,
+        Kernel = odd.Kernel,
+        Browser = odd.Browser,
         events = odd.events;
+
+    utils.log('Version: odd.js/' + odd().version);
+    utils.log('OS:      ' + OS.name + '/' + OS.version + (OS.model ? '; ' + OS.model : ''));
+    utils.log('Kernel:  ' + Kernel.name + '/' + Kernel.version);
+    utils.log('Browser: ' + Browser.name + '/' + Browser.version);
 
     function EventDispatcher(kind, option) {
         var _this = this,

@@ -1,4 +1,4 @@
-var VERSION = '2.1.64';
+var VERSION = '2.3.24';
 var map = {};
 
 self.addEventListener('install', function (e) {
@@ -82,14 +82,24 @@ self.addEventListener('fetch', function (e) {
 });
 
 function isSupported(version) {
-    var minimum = '2.1.64';
+    var minimum = '2.3.24';
     var reg = /^(\d+)\.(\d+)\.(\d+)$/;
     var min = minimum.match(reg);
     var ver = version.match(reg);
-    for (var i = 0; i < min.length; i++) {
-        if (min[i] > ver[i]) {
-            return false;
-        }
+    var v = '';
+    var m = '';
+    for (var i = 1; i < ver.length; i++) {
+        var n = Math.max(ver[i].length, min[i].length);
+        v += padStart(ver[i], n, '0');
+        m += padStart(min[i], n, '0');
     }
-    return true;
+    return v >= m;
+}
+
+function padStart(str, targetLength, padString) {
+    str += '';
+    while (str.length < targetLength) {
+        str = padString + str;
+    }
+    return str;
 }

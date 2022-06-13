@@ -10,7 +10,6 @@
         Code = events.Code,
         UIEvent = events.UIEvent,
         MouseEvent = events.MouseEvent,
-        TimerEvent = events.TimerEvent,
         IM = odd.IM,
         Command = IM.Message.Command,
         UserControl = IM.Message.UserControl,
@@ -31,8 +30,6 @@
         _regi = /(\uD83C[\uDC00-\uDFFF])|(\uD83D[\uDC00-\uDE4F\uDE80-\uDEFF])|(\uD83E[\uDD00-\uDDFF])|([\u231A-\u3299])/gi,
         _default = {
             chan: '001',
-            maxRetries: 0, // maximum number of retries while some types of error occurs. -1 means always
-            retryIn: 1000 + Math.random() * 2000, // ms. retrying interval
             skin: 'classic',
             plugins: [],
         };
@@ -45,9 +42,7 @@
             _wrapper,
             _content,
             _im,
-            _timestamp,
-            _timer,
-            _retried;
+            _timestamp;
 
         EventDispatcher.call(this, 'UI', { id: id, logger: _logger }, utils.extendz({}, Event, NetStatusEvent, UIEvent, MouseEvent));
 
@@ -55,7 +50,6 @@
             _this.id = id;
             _this.logger = _logger;
             _timestamp = 0;
-            _retried = 0;
             _plugins = {};
         }
 
@@ -74,13 +68,17 @@
             _im.addEventListener(NetStatusEvent.NET_STATUS, _onStatus);
             _im.addEventListener(Event.CLOSE, _onClose);
 
-            _timer = new utils.Timer(_this.config.retryIn, 1, _logger);
-            _timer.addEventListener(TimerEvent.TIMER, _onTimer);
-
             _buildPlugins();
             _setupPlugins();
             _this.resize();
-            return await _connect();
+
+            try {
+                await _im.setup(_this.config);
+            } catch (err) {
+                _logger.error(`Failed to setup: ${err}`);
+                return Promise.reject(err);
+            }
+            return await _im.join(_this.config.chan);
         };
 
         function _onBind(e) {
@@ -298,15 +296,6 @@
             _logger.log(`onClose: ${e.data.reason}`);
             _this.close(e.data.reason);
             _this.forward(e);
-
-            if (_retried++ < _this.config.maxRetries || _this.config.maxRetries === -1) {
-                _logger.debug('Retrying...');
-                _timer.start();
-            }
-        }
-
-        async function _onTimer(e) {
-            await _connect();
         }
 
         function _onStateChange(e) {
@@ -326,9 +315,8 @@
         };
 
         _this.destroy = function () {
-            _timer.reset();
             if (_im) {
-                _im.destroy();
+                _im.close();
                 _im.removeEventListener(Event.BIND, _onBind);
                 _im.removeEventListener(Event.READY, _onReady);
                 _im.removeEventListener(NetStatusEvent.NET_STATUS, _onStatus);

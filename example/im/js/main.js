@@ -11,10 +11,10 @@ var users = {};
 var ui = odd.im.ui.create({ mode: 'file' });
 ui.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
 ui.setup(dialog, {
-    url: 'wss://' + location.host + '/im',
-    maxRetries: -1,
     chan: '001',
+    maxRetries: -1,
     skin: 'classic',
+    url: 'wss://' + location.host + '/im',
     plugins: [{
         kind: 'Display',
         visibility: true,

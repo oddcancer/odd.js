@@ -23,7 +23,7 @@ ui.setup(player, {
     maxBufferLength: 1.5,    // sec.
     maxRetries: 0,           // maximum number of retries while some types of error occurs. -1 means always
     mode: 'live',            // live, vod
-    module: 'SRC',           // SRC, FLV, FMP4, DASH*, HLS*, RTC
+    module: 'FLV',           // SRC, FLV, FMP4, DASH*, HLS*, RTC
     objectfit: 'contain',    // fill, contain, cover, none, scale-down
     retrying: 0,             // ms. retrying interval
     loader: {
@@ -34,7 +34,7 @@ ui.setup(player, {
     service: {
         script: 'js/sw.js',
         scope: 'js/',
-        enable: false,
+        enable: true,
     },
     sources: [{
         file: 'https://www.oddcancer.com/live/_definst_/abc.flv',
@@ -74,7 +74,11 @@ ui.setup(player, {
 });
 
 function onReady(e) {
-    // ui.record('fragmented.mp4');
+    // ui.record('fragmented.mp4').then((writer) => {
+    //     setTimeout(function () {
+    //         writer.close();
+    //     }, 10 * 000);
+    // });
 }
 
 function onClick(e) {

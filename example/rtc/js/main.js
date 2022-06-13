@@ -17,9 +17,8 @@ var rtc = odd.rtc.create({ mode: 'feedback', url: 'https://fc.oddcancer.com/rtc/
 rtc.addEventListener(NetStatusEvent.NET_STATUS, onRTCStatus);
 rtc.addEventListener(Event.CLOSE, console.log);
 rtc.setup({
-    // url: 'wss://' + location.host + '/rtc/sig',
-    url: 'wss://www.oddcancer.com/rtc/sig',
     profile: sl_profiles.value || '180P_1',
+    url: 'wss://' + location.host + '/rtc/sig',
     codecpreferences: [
         'audio/opus',
         'video/VP8',

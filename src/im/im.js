@@ -4,12 +4,15 @@
         EventDispatcher = events.EventDispatcher,
         Event = events.Event,
         NetStatusEvent = events.NetStatusEvent,
+        TimerEvent = events.TimerEvent,
         Level = events.Level,
         Code = events.Code,
 
         _id = 0,
         _instances = {},
         _default = {
+            maxRetries: 0, // maximum number of retries while some types of error occurs. -1 means always
+            retryIn: 1000 + Math.random() * 2000, // ms. retrying interval
             url: 'wss://' + location.host + '/im',
         };
 
@@ -18,12 +21,15 @@
             _id = id,
             _logger = option instanceof utils.Logger ? option : new utils.Logger(id, option),
             _nc,
-            _ns;
+            _ns,
+            _timer,
+            _retried;
 
         EventDispatcher.call(this, 'IM', { id: id, logger: _logger }, Event, NetStatusEvent);
 
         function _init() {
             _this.logger = _logger;
+            _retried = 0;
         }
 
         _this.id = function () {
@@ -40,15 +46,12 @@
             _ns = new IM.NetStream(_logger);
             _ns.addEventListener(NetStatusEvent.NET_STATUS, _onStatus);
             _ns.addEventListener(Event.CLOSE, _onCloseStream);
-            _bind();
 
-            try {
-                await _nc.connect(_this.config.url);
-            } catch (err) {
-                _logger.error(`Failed to connect: ${err}`);
-                return Promise.reject(err);
-            }
-            return await _ns.attach(_nc);
+            _timer = new utils.Timer(_this.config.retryIn, 1, _logger);
+            _timer.addEventListener(TimerEvent.TIMER, _onTimer);
+
+            _bind();
+            return await _connect();
         };
 
         function _bind() {
@@ -62,6 +65,16 @@
             _this.dispatchEvent(Event.BIND);
             _this.dispatchEvent(Event.READY);
         }
+
+        async function _connect() {
+            try {
+                await _nc.connect(_this.config.url);
+            } catch (err) {
+                _logger.error(`Failed to connect: ${err}`);
+                return Promise.reject(err);
+            }
+            return await _ns.attach(_nc);
+        };
 
         function _onStatus(e) {
             var level = e.data.level;
@@ -83,9 +96,19 @@
             _logger.log(`onClose: ${e.data.reason}`);
             _this.close(e.data.reason);
             _this.forward(e);
+
+            if (_retried++ < _this.config.maxRetries || _this.config.maxRetries === -1) {
+                _logger.debug('Retrying...');
+                _timer.start();
+            }
+        }
+
+        async function _onTimer(e) {
+            await _connect();
         }
 
         _this.close = function (reason) {
+            _timer.reset();
             switch (_this.state()) {
                 case IM.State.CONNECTED:
                 case IM.State.INITIALIZED:

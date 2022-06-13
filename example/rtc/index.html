@@ -149,6 +149,7 @@
         im.addEventListener(Event.READY, onReady);
         im.addEventListener(NetStatusEvent.NET_STATUS, onIMStatus);
         im.setup({
+            maxRetries: -1,
             url: 'wss://' + location.host + '/im',
         });
 
