@@ -41,7 +41,8 @@
             _stats,
             _handlers,
             _subscribing,
-            _readyState;
+            _readyState,
+            _released;
 
         function _init() {
             _this.config = utils.extendz({}, _default, config);
@@ -51,6 +52,7 @@
             _stats = new RTC.Stats(_logger);
             _subscribing = [];
             _readyState = State.INITIALIZED;
+            _released = false;
 
             _handlers = {
                 sdp: _processCommandSdp,
@@ -72,6 +74,7 @@
             _pc = new RTCPeerConnection(_client.config);
             _pc.addEventListener('negotiationneeded', _onNegotiationNeeded);
             _pc.addEventListener('track', _onTrack);
+            _pc.addEventListener('connectionstatechange', _onConnectionStateChange);
             _pc.addEventListener('icecandidate', _onIceCandidate);
             _pc.addEventListener('iceconnectionstatechange', _onIceConnectionStateChange);
 
@@ -264,6 +267,23 @@
             });
         }
 
+        function _onConnectionStateChange(e) {
+            var pc = e.target;
+            _logger.log(`onConnectionStateChange: id=${_id}, state=${pc.connectionState}`);
+            switch (pc.connectionState) {
+                case 'disconnected':
+                case 'failed':
+                case 'closed':
+                    _this.close(pc.connectionState);
+                    _this.dispatchEvent(Event.CLOSE, { reason: reason });
+                    if (_released) {
+                        _this.dispatchEvent(Event.RELEASE, { reason: reason });
+                    }
+                    _readyState = State.CLOSED;
+                    break;
+            }
+        }
+
         function _onIceCandidate(e) {
             var candidate = e.candidate;
             if (candidate == null) {
@@ -285,7 +305,8 @@
         }
 
         function _onIceConnectionStateChange(e) {
-            _logger.log(`onIceConnectionStateChange: id=${_id}, state=${e.target.iceConnectionState}`);
+            var pc = e.target;
+            _logger.log(`onIceConnectionStateChange: id=${_id}, state=${pc.iceConnectionState}`);
         }
 
         _this.process = function (m) {
@@ -431,13 +452,17 @@
         };
 
         _this.release = function (reason) {
+            _client.call(Signal.RELEASE, _client.id(), null, {
+                id: _id,
+            }).catch((err) => {
+                _logger.error(`Failed to send release: ${err}`);
+            });
+            _released = true;
             _this.close(reason);
-            _this.dispatchEvent(Event.RELEASE);
         };
 
         _this.close = function (reason) {
             switch (_readyState) {
-                case State.INITIALIZED:
                 case State.CONNECTED:
                 case State.PUBLISHING:
                 case State.PLAYING:
@@ -471,10 +496,17 @@
                             });
                         }
                     });
-                    _subscribing = [];
+
                     _pc.close();
-                    _this.dispatchEvent(Event.CLOSE, { reason: reason });
+                    _subscribing = [];
                     _this.stream = null;
+                    break;
+
+                case State.INITIALIZED:
+                    _this.dispatchEvent(Event.CLOSE, { reason: reason });
+                    if (_released) {
+                        _this.dispatchEvent(Event.RELEASE, { reason: reason });
+                    }
                     _readyState = State.CLOSED;
                     break;
             }
