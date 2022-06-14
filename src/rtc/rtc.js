@@ -92,6 +92,10 @@
         };
 
         _this.publish = async function (screensharing, withcamera, option, callback) {
+            if (_publisher) {
+                return Promise.reject('still publishing');
+            }
+
             _publisher = new RTC.NetStream({
                 ip: _this.config.ip,
                 codecpreferences: _this.config.codecpreferences,

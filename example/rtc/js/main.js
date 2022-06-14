@@ -10,7 +10,7 @@ var utils = odd.utils,
     Constraints = RTC.Constraints,
 
     _detected = false,
-    _publisher,
+    _publisher = undefined,
     _subscribers = {}; // ns.id: ns
 
 var rtc = odd.rtc.create({ mode: 'feedback', url: 'https://fc.oddcancer.com/rtc/log', interval: 60 });
@@ -69,6 +69,11 @@ async function getDevices() {
 }
 
 async function onPublishClick(e) {
+    if (_publisher) {
+        console.warn(`Still publishing.`);
+        return;
+    }
+
     var video = document.createElement('video');
     video.setAttribute('playsinline', '');
     video.setAttribute('autoplay', '');
@@ -116,6 +121,7 @@ function onChangeMicrophoneClick(e) {
 
 function onUnpublishClick(e) {
     rtc.unpublish();
+    _publisher = undefined;
 }
 
 async function onPlayClick(e) {
