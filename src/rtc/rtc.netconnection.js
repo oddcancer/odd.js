@@ -13,9 +13,7 @@
 
         _default = {
             iceServers: [{
-                urls: ["stun:stun.l.google.com:19302"], // ?transport=tcp
-                username: "",
-                credential: "",
+                urls: ["stun:stun.l.google.com:19302"],
             }],
             iceTransportPolicy: "all", // all, relay
         };

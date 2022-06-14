@@ -275,11 +275,6 @@
                 case 'failed':
                 case 'closed':
                     _this.close(pc.connectionState);
-                    _this.dispatchEvent(Event.CLOSE, { reason: reason });
-                    if (_released) {
-                        _this.dispatchEvent(Event.RELEASE, { reason: reason });
-                    }
-                    _readyState = State.CLOSED;
                     break;
             }
         }
@@ -500,6 +495,12 @@
                     _pc.close();
                     _subscribing = [];
                     _this.stream = null;
+
+                    _this.dispatchEvent(Event.CLOSE, { reason: reason });
+                    if (_released) {
+                        _this.dispatchEvent(Event.RELEASE, { reason: reason });
+                    }
+                    _readyState = State.CLOSED;
                     break;
 
                 case State.INITIALIZED:
