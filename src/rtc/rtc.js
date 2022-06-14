@@ -184,7 +184,7 @@
                         track.stop();
                     }
                 });
-                _publisher.release();
+                _publisher.release('unpublish');
                 _publisher = undefined;
             }
         };

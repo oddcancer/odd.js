@@ -180,10 +180,6 @@
             var ns = e.target;
             ns.onrelease = undefined;
             delete _channels[ns.id()];
-
-            _this.call(Signal.RELEASE, _id, null, {
-                id: ns.id(),
-            });
         }
 
         _this.call = function (command, chan, responder, args) {

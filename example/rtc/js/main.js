@@ -99,11 +99,6 @@ async function onPublishClick(e) {
             view.removeChild(video);
         };
     })(ns, video));
-    ns.addEventListener(Event.CLOSE, (function (ns, video) {
-        return function (e) {
-            view.removeChild(video);
-        };
-    })(ns, video));
     _publisher = ns;
 }
 
