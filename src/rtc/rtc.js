@@ -121,44 +121,49 @@
 
             var stream;
             if (screensharing) {
-                stream = await _publisher.getDisplayMedia();
                 if (withcamera) {
+                    stream = new MediaStream();
+
                     _videomixer = new RTC.Mixer.VideoMixer(_logger);
                     _videomixer.applyConstraints(_this.constraints.video);
 
-                    stream.getAudioTracks().forEach(function (track) {
-                        _publisher.addTrack(track, stream);
+                    var source = await _publisher.getDisplayMedia();
+                    source.getAudioTracks().forEach(function (track) {
+                        stream.addTrack(track);
                     });
-
                     var screen = utils.createElement('video');
                     screen.setAttribute('playsinline', '');
                     screen.setAttribute('autoplay', '');
                     screen.width = _this.constraints.video.width;
                     screen.height = _this.constraints.video.height;
                     screen.muted = true;
-                    screen.track = stream.getVideoTracks()[0];
-                    screen.srcObject = stream;
+                    screen.track = source.getVideoTracks()[0];
+                    screen.srcObject = source;
                     screen.play();
                     _videomixer.add(screen, { layer: 0 });
 
-                    stream = await _publisher.getUserMedia();
-                    stream.getAudioTracks().forEach(function (track) {
-                        _publisher.addTrack(track, stream);
+                    source = await _publisher.getUserMedia();
+                    source.getAudioTracks().forEach(function (track) {
+                        stream.addTrack(track);
                     });
-
                     var camera = utils.createElement('video');
                     camera.setAttribute('playsinline', '');
                     camera.setAttribute('autoplay', '');
                     camera.width = option && option.width ? option.width : 320;
                     camera.height = option && option.height ? option.height : 180;
                     camera.muted = true;
-                    camera.track = stream.getVideoTracks()[0];
-                    camera.srcObject = stream;
+                    camera.track = source.getVideoTracks()[0];
+                    camera.srcObject = source;
                     camera.play();
                     _videomixer.add(camera, utils.extendz({ layer: 4 }, utils.extendz({ top: 20, right: 20 }, option)));
 
                     _videomixer.start();
-                    stream = _videomixer.stream();
+                    source = _videomixer.stream();
+                    source.getVideoTracks().forEach(function (track) {
+                        stream.addTrack(track);
+                    });
+                } else {
+                    stream = await _publisher.getDisplayMedia();
                 }
             } else {
                 stream = await _publisher.getUserMedia();
