@@ -39,12 +39,6 @@
             _this.logger = _logger;
             _subscribers = {};
             _retried = 0;
-
-            _stats = new utils.Timer(1000, 0, _logger);
-            _stats.addEventListener(TimerEvent.TIMER, _onStats);
-
-            _timer = new utils.Timer(_this.config.retryIn, 1, _logger);
-            _timer.addEventListener(TimerEvent.TIMER, _onTimer);
         }
 
         _this.id = function () {
@@ -58,6 +52,12 @@
             _nc = new RTC.NetConnection(_this.config.rtcconfiguration, _logger);
             _nc.addEventListener(NetStatusEvent.NET_STATUS, _onStatus);
             _nc.addEventListener(Event.CLOSE, _onClose);
+
+            _stats = new utils.Timer(1000, 0, _logger);
+            _stats.addEventListener(TimerEvent.TIMER, _onStats);
+
+            _timer = new utils.Timer(_this.config.retryIn, 1, _logger);
+            _timer.addEventListener(TimerEvent.TIMER, _onTimer);
 
             _bind();
             return await _connect();
