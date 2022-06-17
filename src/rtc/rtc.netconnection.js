@@ -70,7 +70,7 @@
 
         function _onOpen(e) {
             _this.call(Signal.CONNECT, _id, new Responder(function (m) {
-                _logger.log(`Connect success.`);
+                _logger.log(`RTC signaling connect success.`);
                 var info = m.data.info;
                 for (var key in info.user) {
                     _this.properties[key] = info.user[key];

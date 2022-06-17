@@ -17,7 +17,9 @@ var rtc = odd.rtc.create({ mode: 'feedback', url: 'https://fc.oddcancer.com/rtc/
 rtc.addEventListener(NetStatusEvent.NET_STATUS, onRTCStatus);
 rtc.addEventListener(Event.CLOSE, console.log);
 rtc.setup({
+    maxRetries: -1,
     profile: sl_profiles.value || '180P_1',
+    retryIn: 2000,
     url: 'wss://' + location.host + '/rtc/sig',
     codecpreferences: [
         'audio/opus',
@@ -70,7 +72,7 @@ async function getDevices() {
 
 async function onPublishClick(e) {
     if (_publisher) {
-        console.warn(`Still publishing.`);
+        console.warn(`Already published.`);
         return;
     }
 
@@ -93,6 +95,8 @@ async function onPublishClick(e) {
     }
     var ns = await rtc.publish(sl_mode.value > 0, sl_mode.value == 2, null, function (stream) {
         video.srcObject = stream;
+    }).catch(function (err) {
+        console.warn(`${err}`);
     });
     ns.addEventListener(Event.CLOSE, (function (ns, video) {
         return function (e) {
@@ -130,7 +134,9 @@ async function play(name) {
     video.setAttribute('controls', '');
     view.appendChild(video);
 
-    var ns = await rtc.play(name);
+    var ns = await rtc.play(name).catch(function (err) {
+        console.warn(`${err}`);
+    });
     ns.addEventListener(NetStatusEvent.NET_STATUS, (function (ns, video) {
         return function (e) {
             switch (e.data.code) {

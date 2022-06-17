@@ -30,6 +30,9 @@
         function _init() {
             _this.logger = _logger;
             _retried = 0;
+
+            _timer = new utils.Timer(_this.config.retryIn, 1, _logger);
+            _timer.addEventListener(TimerEvent.TIMER, _onTimer);
         }
 
         _this.id = function () {
@@ -46,9 +49,6 @@
             _ns = new IM.NetStream(_logger);
             _ns.addEventListener(NetStatusEvent.NET_STATUS, _onStatus);
             _ns.addEventListener(Event.CLOSE, _onCloseStream);
-
-            _timer = new utils.Timer(_this.config.retryIn, 1, _logger);
-            _timer.addEventListener(TimerEvent.TIMER, _onTimer);
 
             _bind();
             return await _connect();

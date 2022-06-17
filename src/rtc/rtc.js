@@ -13,7 +13,9 @@
         _instances = {},
         _default = {
             ip: '',
+            maxRetries: 0, // maximum number of retries while some types of error occurs. -1 means always
             profile: '720P_1',
+            retryIn: 1000 + Math.random() * 2000, // ms. retrying interval
             url: 'wss://' + location.host + '/rtc/sig',
             codecpreferences: [],
             rtcconfiguration: {},
@@ -27,14 +29,21 @@
             _publisher,
             _subscribers, // name: ns
             _videomixer,
-            _timer;
+            _stats,
+            _timer,
+            _retried;
 
         EventDispatcher.call(this, 'RTC', { id: id, logger: _logger }, Event, NetStatusEvent);
 
         function _init() {
             _this.logger = _logger;
             _subscribers = {};
-            _timer = new utils.Timer(1000, 0, _logger);
+            _retried = 0;
+
+            _stats = new utils.Timer(1000, 0, _logger);
+            _stats.addEventListener(TimerEvent.TIMER, _onStats);
+
+            _timer = new utils.Timer(_this.config.retryIn, 1, _logger);
             _timer.addEventListener(TimerEvent.TIMER, _onTimer);
         }
 
@@ -49,8 +58,18 @@
             _nc = new RTC.NetConnection(_this.config.rtcconfiguration, _logger);
             _nc.addEventListener(NetStatusEvent.NET_STATUS, _onStatus);
             _nc.addEventListener(Event.CLOSE, _onClose);
-            _bind();
 
+            _bind();
+            return await _connect();
+        };
+
+        function _bind() {
+            _this.state = _nc.state;
+            _this.dispatchEvent(Event.BIND);
+            _this.dispatchEvent(Event.READY);
+        }
+
+        async function _connect() {
             try {
                 await _nc.connect(_this.config.url);
             } catch (err) {
@@ -59,12 +78,6 @@
             }
             return Promise.resolve();
         };
-
-        function _bind() {
-            _this.state = _nc.state;
-            _this.dispatchEvent(Event.BIND);
-            _this.dispatchEvent(Event.READY);
-        }
 
         _this.setProfile = function (profile) {
             _this.config.profile = profile;
@@ -93,7 +106,8 @@
 
         _this.publish = async function (screensharing, withcamera, option, callback) {
             if (_publisher) {
-                return Promise.reject('still publishing');
+                _logger.error(`Already published.`);
+                return Promise.reject('publishing');
             }
 
             _publisher = new RTC.NetStream({
@@ -158,9 +172,10 @@
             try {
                 await _publisher.publish();
             } catch (err) {
+                _logger.error(`Failed to publish on pipe ${_publisher.id()}`);
                 return Promise.reject(err);
             }
-            _timer.start();
+            _stats.start();
             return Promise.resolve(_publisher);
         };
 
@@ -191,6 +206,7 @@
 
         _this.play = async function (name) {
             if (_subscribers.hasOwnProperty(name)) {
+                _logger.error(`Stream ${name} is already playing.`);
                 return Promise.reject('playing');
             }
 
@@ -205,9 +221,10 @@
                 await ns.play(name, "all");
                 _subscribers[name] = ns;
             } catch (err) {
+                _logger.error(`Failed to play stream ${name} on pipe ${ns.id()}.`);
                 return Promise.reject(err);
             }
-            _timer.start();
+            _stats.start();
             return Promise.resolve(ns);
         };
 
@@ -265,16 +282,25 @@
             _logger.log(`onClose: ${e.data.reason}`);
             _this.destroy(e.data.reason);
             _this.forward(e);
+
+            if (_retried++ < _this.config.maxRetries || _this.config.maxRetries === -1) {
+                _logger.debug('Retrying...');
+                _timer.start();
+            }
         }
 
-        function _onTimer(e) {
+        async function _onTimer(e) {
+            await _connect();
+        }
+
+        function _onStats(e) {
             if (_publisher) {
                 _getStats(_publisher);
             }
             utils.forEach(_subscribers, function (_, ns) {
                 _getStats(ns);
             });
-            if ((_timer.currentCount() % _logger.config.interval) === 0) {
+            if ((_stats.currentCount() % _logger.config.interval) === 0) {
                 _logger.flush();
             }
         }
@@ -292,6 +318,7 @@
         }
 
         _this.destroy = function (reason) {
+            _timer.reset();
             switch (_this.state()) {
                 case RTC.State.CONNECTED:
                 case RTC.State.INITIALIZED:

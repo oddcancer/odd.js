@@ -78,7 +78,7 @@
 
         function _onOpen(e) {
             _this.call(Command.CONNECT, _id, 0, new Responder(function (m) {
-                _logger.log(`Connect success.`);
+                _logger.log(`IM connect success.`);
                 var info = m.Arguments.info;
                 for (var key in info.user) {
                     _this.properties[key] = info.user[key];
