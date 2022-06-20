@@ -199,7 +199,7 @@
         }
 
         function _onError(e) {
-            _logger.error(`onError: name=${e.name}, message=${e.message}`);
+            _logger.error(`onError: ${e}`);
             if (_reject) {
                 _reject();
                 _resolve = _reject = undefined;
@@ -208,8 +208,8 @@
         }
 
         function _onClose(e) {
-            _logger.log(`onClose: ${e.reason || 'EOF'}`);
-            _this.close(e.reason || 'EOF');
+            _logger.log(`onClose: ${e.code} ${e.reason || 'EOF'}`);
+            _this.close(`${e.code} ${e.reason || 'EOF'}`);
         }
 
         _this.create = async function (ns, responder) {

@@ -149,8 +149,8 @@
                     var camera = utils.createElement('video');
                     camera.setAttribute('playsinline', '');
                     camera.setAttribute('autoplay', '');
-                    camera.width = option && option.width ? option.width : 320;
-                    camera.height = option && option.height ? option.height : 180;
+                    camera.width = option && option.width ? option.width : screen.width / 4;
+                    camera.height = option && option.height ? option.height : screen.height / 4;
                     camera.muted = true;
                     camera.track = source.getVideoTracks()[0];
                     camera.srcObject = source;

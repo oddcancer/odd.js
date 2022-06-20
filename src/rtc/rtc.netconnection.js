@@ -146,8 +146,8 @@
         }
 
         function _onClose(e) {
-            _logger.log(`onClose: EOF`);
-            _this.close('EOF');
+            _logger.log(`onClose: ${e.code} ${e.reason || 'EOF'}`);
+            _this.close(`${e.code} ${e.reason || 'EOF'}`);
         }
 
         _this.create = async function (ns, responder) {
