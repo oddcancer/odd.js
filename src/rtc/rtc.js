@@ -72,8 +72,10 @@
         async function _connect() {
             try {
                 await _nc.connect(_this.config.url);
+                _timer.delay = _this.config.retryIn;
             } catch (err) {
                 _logger.error(`Failed to connect: ${err}`);
+                _timer.delay *= 2;
                 return Promise.reject(err);
             }
             return Promise.resolve();
@@ -285,17 +287,16 @@
 
         function _onClose(e) {
             _logger.log(`onClose: ${e.data.reason}`);
-            _this.destroy(e.data.reason);
             _this.forward(e);
 
             if (_retried++ < _this.config.maxRetries || _this.config.maxRetries === -1) {
-                _logger.debug('Retrying...');
+                _logger.debug(`RTC signaling about to reconnect in ${_timer.delay} ...`);
                 _timer.start();
             }
         }
 
         async function _onTimer(e) {
-            await _connect();
+            await _connect().catch((err) => { });
         }
 
         function _onStats(e) {

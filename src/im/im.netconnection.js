@@ -26,7 +26,7 @@
             _conn,
             _resolve,
             _reject,
-            _channels,
+            _pipes,
             _messages,
             _commands,
             _controls,
@@ -43,7 +43,7 @@
             _this.config = utils.extendz({}, _default, config);
             _this.properties = {};
             _id = 0;
-            _channels = { 0: _this };
+            _pipes = { 0: _this };
             _messages = {};
             _commands = {};
             _controls = {};
@@ -104,15 +104,15 @@
                 return;
             }
 
-            var channel = _channels[p.StreamID];
-            if (channel == null) {
+            var pipe = _pipes[p.StreamID];
+            if (pipe == null) {
                 _logger.warn(`Channel ${p.StreamID} not found, should create at first.`);
                 return;
             }
             try {
-                channel.process(p);
+                pipe.process(p);
             } catch (err) {
-                _logger.error(`Failed to process message: type=${p.Type}, channel=${p.StreamID}, error=${err}`);
+                _logger.error(`Failed to process message: type=${p.Type}, pipe=${p.StreamID}, error=${err}`);
                 _this.close(err.message);
             }
         }
@@ -219,16 +219,16 @@
                 status = reject;
             });
             _this.call(Command.CREATE, _id, 0, new Responder(function (m) {
-                _logger.log(`Create channel success: id=${m.Arguments.info.id}`);
+                _logger.log(`Create pipe success: id=${m.Arguments.info.id}`);
                 ns.onrelease = _onRelease; // Do not use addEventListener here, make sure this is the only listener.
 
-                _channels[m.Arguments.info.id] = ns;
+                _pipes[m.Arguments.info.id] = ns;
                 if (responder && responder.result) {
                     responder.result(m);
                 }
                 result();
             }, function (m) {
-                _logger.error(`Failed to create channel: level=${m.Arguments.level}, code=${m.Arguments.code}, description=${m.Arguments.description}`);
+                _logger.error(`Failed to create pipe: level=${m.Arguments.level}, code=${m.Arguments.code}, description=${m.Arguments.description}`);
                 if (responder && responder.status) {
                     responder.status(m);
                 }
@@ -241,14 +241,14 @@
         function _onRelease(e) {
             var ns = e.target;
             ns.onrelease = undefined;
-            delete _channels[ns.id()];
+            delete _pipes[ns.id()];
 
             _this.call(Command.RELEASE, _id, 0, null, {
                 id: ns.id(),
             });
         }
 
-        _this.call = function (command, channel, transactionID, responder, args) {
+        _this.call = function (command, pipe, transactionID, responder, args) {
             if (responder) {
                 transactionID = ++_transactionID;
                 _responders[transactionID] = responder;
@@ -269,10 +269,10 @@
             i++;
             data.set(byte, i);
 
-            return _this.write(Type.COMMAND, channel, data);
+            return _this.write(Type.COMMAND, pipe, data);
         };
 
-        _this.sendUserControl = function (channel, transactionID, responder, info, payload) {
+        _this.sendUserControl = function (pipe, transactionID, responder, info, payload) {
             if (responder) {
                 transactionID = ++_transactionID;
                 _responders[transactionID] = responder;
@@ -301,10 +301,10 @@
                 data.set(payload, i);
                 i += payload.byteLength;
             }
-            return _this.write(Type.USER_CONTROL, channel, data);
+            return _this.write(Type.USER_CONTROL, pipe, data);
         };
 
-        _this.write = function (type, channel, payload) {
+        _this.write = function (type, pipe, payload) {
             var i = 0;
             var data = new Uint8Array(7 + payload.byteLength);
             var view = new DataView(data.buffer);
@@ -313,7 +313,7 @@
             i++;
             view.setUint16(i, ++_sn);
             i += 2;
-            view.setUint32(i, channel);
+            view.setUint32(i, pipe);
             i += 4;
             data.set(payload, i);
             i += payload.byteLength;
@@ -321,7 +321,7 @@
             try {
                 _conn.send(view);
             } catch (err) {
-                _logger.error(`Failed to send: type=${type}, channle=${channel}, error=${err}`);
+                _logger.error(`Failed to send: type=${type}, channle=${pipe}, error=${err}`);
                 return Promise.reject(err);
             }
             return Promise.resolve();
@@ -335,15 +335,14 @@
             switch (_readyState) {
                 case State.CONNECTED:
                     _readyState = State.CLOSING;
-                    for (var i in _channels) {
+                    for (var i in _pipes) {
                         if (i != 0) {
-                            var ns = _channels[i];
-                            // Can I call release instead?
-                            ns.onrelease = undefined;
-                            ns.close(reason);
+                            var pipe = _pipes[i];
+                            pipe.onrelease = undefined;
+                            pipe.release(reason);
                         }
                     }
-                    _channels = { 0: _this };
+                    _pipes = { 0: _this };
                     if (_conn && (_conn.readyState == WebSocket.CONNECTING || _conn.readyState == WebSocket.OPEN)) {
                         _conn.close();
                         _conn = undefined;

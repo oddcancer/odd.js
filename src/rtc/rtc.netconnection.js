@@ -27,7 +27,7 @@
             _conn,
             _resolve,
             _reject,
-            _channels,
+            _pipes,
             _handlers,
             _responders,
             _sn,
@@ -37,7 +37,7 @@
             _this.config = utils.extendz({}, _default, config);
             _this.properties = {};
             _id = 0;
-            _channels = { 0: _this };
+            _pipes = { 0: _this };
             _responders = {};
             _sn = 0;
             _readyState = State.INITIALIZED;
@@ -82,7 +82,7 @@
                 _logger.error(`Failed to connect: ${m.data.description}`);
                 _reject();
                 _resolve = _reject = undefined;
-            }));
+            }), _this.properties);
         }
 
         function _onMessage(e) {
@@ -96,12 +96,12 @@
                 return;
             }
 
-            var channel = _channels[m.chan];
-            if (channel == null) {
+            var pipe = _pipes[m.chan];
+            if (pipe == null) {
                 _logger.warn(`Channel ${m.chan} not found, should create at first.`);
                 return;
             }
-            channel.process(m);
+            pipe.process(m);
         }
 
         _this.process = function (m) {
@@ -147,7 +147,8 @@
 
         function _onClose(e) {
             _logger.log(`onClose: ${e.code} ${e.reason || 'EOF'}`);
-            _this.close(`${e.code} ${e.reason || 'EOF'}`);
+            _this.dispatchEvent(Event.CLOSE, { reason: `${e.code} ${e.reason || 'EOF'}` });
+            _readyState = State.CLOSED;
         }
 
         _this.create = async function (ns, responder) {
@@ -157,16 +158,16 @@
                 status = reject;
             });
             _this.call(Signal.CREATE, _id, new Responder(function (m) {
-                _logger.log(`Create channel success: id=${m.data.id}`);
+                _logger.log(`Create pipe success: id=${m.data.id}`);
                 ns.onrelease = _onRelease; // Do not use addEventListener here, make sure this is the only listener.
 
-                _channels[m.data.id] = ns;
+                _pipes[m.data.id] = ns;
                 if (responder && responder.result) {
                     responder.result(m);
                 }
                 result();
             }, function (m) {
-                _logger.error(`Failed to create channel: level=${m.data.level}, code=${m.data.code}, description=${m.data.description}`);
+                _logger.error(`Failed to create pipe: level=${m.data.level}, code=${m.data.code}, description=${m.data.description}`);
                 if (responder && responder.status) {
                     responder.status(m);
                 }
@@ -179,7 +180,7 @@
         function _onRelease(e) {
             var ns = e.target;
             ns.onrelease = undefined;
-            delete _channels[ns.id()];
+            delete _pipes[ns.id()];
         }
 
         _this.call = function (command, chan, responder, args) {
@@ -212,23 +213,15 @@
             switch (_readyState) {
                 case State.CONNECTED:
                     _readyState = State.CLOSING;
-                    for (var i in _channels) {
+                    for (var i in _pipes) {
                         if (i != 0) {
-                            var ns = _channels[i];
-                            // Can I call release instead?
-                            ns.onrelease = undefined;
-                            ns.close(reason);
+                            var pipe = _pipes[i];
+                            pipe.onrelease = undefined;
+                            pipe.release(reason);
                         }
                     }
-                    _channels = { 0: _this };
-                    if (_conn && (_conn.readyState == WebSocket.CONNECTING || _conn.readyState == WebSocket.OPEN)) {
-                        _conn.close();
-                        _conn = undefined;
-                    }
-                    _this.dispatchEvent(Event.CLOSE, { reason: reason });
-                    _readyState = State.CLOSED;
-                    break;
-
+                    _pipes = { 0: _this };
+                /* fallthrough */
                 case State.INITIALIZED:
                     _readyState = State.CLOSING;
                     if (_conn && (_conn.readyState == WebSocket.CONNECTING || _conn.readyState == WebSocket.OPEN)) {
