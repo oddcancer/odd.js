@@ -58,13 +58,15 @@ scripts=()
 scripts[0]="./src/im/ui/ui.js"
 scripts[1]="./src/im/ui/components/components.js"
 scripts[2]="./src/im/ui/components/components.button.js"
-scripts[3]="./src/im/ui/components/components.label.js"
-scripts[4]="./src/im/ui/components/components.select.js"
-scripts[5]="./src/im/ui/components/components.slider.js"
-scripts[6]="./src/im/ui/components/components.panel.js"
-scripts[7]="./src/im/ui/ui.display.js"
-scripts[8]="./src/im/ui/ui.toolbar.js"
-scripts[9]="./src/im/ui/ui.input.js"
+scripts[3]="./src/im/ui/components/components.dialog.js"
+scripts[4]="./src/im/ui/components/components.label.js"
+scripts[5]="./src/im/ui/components/components.panel.js"
+scripts[6]="./src/im/ui/components/components.select.js"
+scripts[7]="./src/im/ui/components/components.slider.js"
+scripts[8]="./src/im/ui/components/components.tab.js"
+scripts[9]="./src/im/ui/ui.messages.js"
+scripts[10]="./src/im/ui/ui.contacts.js"
+scripts[11]="./src/im/ui/ui.settings.js"
 
 :>./release/odd.im.ui.js
 

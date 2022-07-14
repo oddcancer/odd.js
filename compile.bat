@@ -71,14 +71,16 @@ goto loop
 set scripts[0]=".\src\im\ui\ui.js"
 set scripts[1]=".\src\im\ui\components\components.js"
 set scripts[2]=".\src\im\ui\components\components.button.js"
-set scripts[3]=".\src\im\ui\components\components.label.js"
-set scripts[4]=".\src\im\ui\components\components.select.js"
-set scripts[5]=".\src\im\ui\components\components.slider.js"
-set scripts[6]=".\src\im\ui\components\components.panel.js"
-set scripts[7]=".\src\im\ui\ui.display.js"
-set scripts[8]=".\src\im\ui\ui.toolbar.js"
-set scripts[9]=".\src\im\ui\ui.input.js"
-set length=10
+set scripts[3]=".\src\im\ui\components\components.dialog.js"
+set scripts[4]=".\src\im\ui\components\components.label.js"
+set scripts[5]=".\src\im\ui\components\components.panel.js"
+set scripts[6]=".\src\im\ui\components\components.select.js"
+set scripts[7]=".\src\im\ui\components\components.slider.js"
+set scripts[8]=".\src\im\ui\components\components.tab.js"
+set scripts[9]=".\src\im\ui\ui.messages.js"
+set scripts[10]=".\src\im\ui\ui.contacts.js"
+set scripts[11]=".\src\im\ui\ui.settings.js"
+set length=12
 
 cd.>.\release\odd.im.ui.js
 
