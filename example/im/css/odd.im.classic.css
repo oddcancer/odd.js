@@ -279,6 +279,8 @@
 
 .im-ui-classic .im-dialog .im-title .title {
     padding: 0 20px;
+    font-weight: bold;
+    color: #000000;
     flex: auto;
 }
 
@@ -310,6 +312,7 @@
 }
 
 .im-ui-classic .im-dialog .im-content .im-message-time {
+    color: #BDBDBD;
     text-align: center;
 }
 
