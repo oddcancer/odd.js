@@ -191,14 +191,11 @@
     };
 
     utils.indexOf = function (array, item) {
-        if (utils.typeOf(array) === 'array') {
-            for (var i = 0; i < array.length; i++) {
-                if (array[i] === item) {
-                    return i;
-                }
+        for (var i = 0; i < array.length; i++) {
+            if (array[i] === item) {
+                return i;
             }
         }
-
         return -1;
     };
 

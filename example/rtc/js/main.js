@@ -20,7 +20,7 @@ rtc.setup({
     maxRetries: -1,
     profile: sl_profiles.value || '180P_1',
     retryIn: 2000,
-    url: 'wss://' + location.host + '/rtc/sig',
+    url: 'wss://www.oddcancer.com/rtc/sig',
     codecpreferences: [
         'audio/opus',
         'video/VP8',
@@ -176,7 +176,7 @@ function onRTCStatus(e) {
                 im.sendUserControl(0, null, {
                     type: 'published',
                     cast: 'multi',
-                    chan: in_chan.value,
+                    id: in_chan.value,
                     stream: info.stream,
                 });
             }

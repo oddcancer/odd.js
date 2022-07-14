@@ -11,23 +11,36 @@ var users = {};
 var ui = odd.im.ui.create({ mode: 'file' });
 ui.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
 ui.setup(dialog, {
-    chan: '001',
     maxRetries: -1,
     skin: 'classic',
     url: 'wss://' + location.host + '/im',
     plugins: [{
-        kind: 'Display',
+        kind: 'Messages',
+        layout: '',
+        dialog: {
+            title: '[Button:close=][Label:title=][Button:more=]',
+            toolbar: '[Select:emojipicker=]',
+            label: 'Send',
+            maxlength: 500,
+        },
         visibility: true,
     }, {
-        kind: 'Toolbar',
-        layout: '[Select:emojipicker=]',
+        kind: 'Contacts',
         visibility: true,
     }, {
-        kind: 'Input',
-        label: 'Send',
-        maxlength: 500,
+        kind: 'Settings',
         visibility: true,
     }],
+}).then(() => {
+    ui.join('001').catch((err) => {
+        ui.logger.error(`Failed to join 001: ${err}`);
+    });
+    ui.join('002').catch((err) => {
+        ui.logger.error(`Failed to join 002: ${err}`);
+    });
+    ui.join('003').catch((err) => {
+        ui.logger.error(`Failed to join 003: ${err}`);
+    });
 }).catch((err) => {
     ui.logger.error(`Failed to setup: ${err}`);
 });

@@ -1,6 +1,6 @@
 odd = function () {
     return {
-        version: '2.3.30',
+        version: '2.3.34',
     };
 };
 

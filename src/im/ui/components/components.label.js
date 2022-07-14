@@ -28,7 +28,7 @@
             if (text !== undefined) {
                 _container.innerHTML = text;
             }
-            return _kind;
+            return _container.innerHTML;
         };
 
         _this.element = function () {

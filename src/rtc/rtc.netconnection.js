@@ -31,6 +31,7 @@
             _handlers,
             _responders,
             _sn,
+            _queued,
             _readyState;
 
         function _init() {
@@ -40,6 +41,7 @@
             _pipes = { 0: _this };
             _responders = {};
             _sn = 0;
+            _queued = [];
             _readyState = State.INITIALIZED;
 
             _handlers = {
@@ -72,8 +74,23 @@
             _this.call(Signal.CONNECT, _id, new Responder(function (m) {
                 _logger.log(`RTC signaling connect success.`);
                 var info = m.data.info;
+                var fastreconnect = _this.properties.id === info.user.id;
                 for (var key in info.user) {
                     _this.properties[key] = info.user[key];
+                }
+                if (fastreconnect) {
+                    for (/* void */; _queued.length; _queued.shift()) {
+                        try {
+                            var b = _queued[0];
+                            _conn.send(b);
+                            _logger.debug(`Sent: ${b}`);
+                        } catch (err) {
+                            _logger.warn(`Failed to resend: ${err}`);
+                            break;
+                        }
+                    }
+                } else {
+                    _queued = [];
                 }
                 _readyState = State.CONNECTED;
                 _resolve();
@@ -200,6 +217,7 @@
                 _logger.debug(`Sent: ${b}`);
             } catch (err) {
                 _logger.error(`Failed to call ${command}: ${err}`);
+                _queued.push(b);
                 return Promise.reject(err);
             }
             return Promise.resolve();

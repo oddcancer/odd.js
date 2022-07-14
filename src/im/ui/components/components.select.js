@@ -62,7 +62,6 @@
                 _this.dispatchEvent(GlobalEvent.CHANGE, { name: _name, value: value });
             }
             _this.dispatchEvent(MouseEvent.CLICK, { name: _name, value: value });
-            // _menu.style.visibility = 'hidden';
         }
 
         _this.visibility = function (visibility) {
@@ -111,7 +110,10 @@
         };
 
         _this.resize = function (width, height) {
-
+            css.style(_menu, {
+                'width': width + 'px',
+                'max-height': height + 'px',
+            });
         };
 
         _init();

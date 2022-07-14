@@ -180,7 +180,7 @@
                         im.sendUserControl(0, null, {
                             type: 'published',
                             cast: 'uni',
-                            to: info.user.id,
+                            id: info.user.id,
                             stream: _publisher.stream.id + '@' + location.host + '/rtc/sig',
                         });
                     }

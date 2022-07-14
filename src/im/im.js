@@ -58,7 +58,6 @@
             _this.join = _ns.join;
             _this.leave = _ns.leave;
             _this.send = _ns.send;
-            _this.sendTo = _ns.sendTo;
             _this.call = _ns.call;
             _this.sendUserControl = _ns.sendUserControl;
             _this.state = _nc.state;

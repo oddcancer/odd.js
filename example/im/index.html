@@ -15,6 +15,12 @@
 
     <link type='text/css' rel='stylesheet' href='css/style.css' />
     <link type='text/css' rel='stylesheet' href='css/odd.im.classic.css' />
+    <style type='text/css'>
+        /* .im-ui-classic .nav>.im-tab-head,
+        .im-ui-classic .nav>.im-tab-body>.im-tab-page>*>.im-tab>.im-tab-head {
+            display: none;
+        } */
+    </style>
 
     <!-- <script type='text/javascript' src='../../release/odd.common.min.js'></script> -->
     <!-- <script type='text/javascript' src='../../release/odd.im.min.js'></script> -->
@@ -56,64 +62,96 @@
     <script type='text/javascript' src='../../src/im/ui/ui.js'></script>
     <script type='text/javascript' src='../../src/im/ui/components/components.js'></script>
     <script type='text/javascript' src='../../src/im/ui/components/components.button.js'></script>
+    <script type='text/javascript' src='../../src/im/ui/components/components.dialog.js'></script>
     <script type='text/javascript' src='../../src/im/ui/components/components.label.js'></script>
+    <script type='text/javascript' src='../../src/im/ui/components/components.panel.js'></script>
     <script type='text/javascript' src='../../src/im/ui/components/components.select.js'></script>
     <script type='text/javascript' src='../../src/im/ui/components/components.slider.js'></script>
-    <script type='text/javascript' src='../../src/im/ui/components/components.panel.js'></script>
-    <script type='text/javascript' src='../../src/im/ui/ui.display.js'></script>
-    <script type='text/javascript' src='../../src/im/ui/ui.toolbar.js'></script>
-    <script type='text/javascript' src='../../src/im/ui/ui.input.js'></script>
+    <script type='text/javascript' src='../../src/im/ui/components/components.tab.js'></script>
+    <script type='text/javascript' src='../../src/im/ui/ui.messages.js'></script>
+    <script type='text/javascript' src='../../src/im/ui/ui.contacts.js'></script>
+    <script type='text/javascript' src='../../src/im/ui/ui.settings.js'></script>
 </head>
 
 <body ontouchstart=''>
-    <div class='wrap'>
-        <div class=''>
-            <section>
-                <div id='dialog'>
-                    <div class='im-wrapper im-ui-classic' state=''>
-                        <div class='im-content'>
-                            <div class='im-content-time'>2021-12-01 12:00:00</div>
-                            <div class='im-content-item [me]'>
-                                <span class='im-level vip3'>vip3</span>
-                                <!-- <span class='im-badge'></span> -->
-                                <span class='im-nick'>Spencer</span>
-                                <span class='im-separator'>:</span>
-                                <span class='im-body'><span class='im-emoji'>&#x1F600;</span><span class='im-emoji'>&#x1F600;</span><span class='im-emoji'>&#x1F600;</span>Hi there! This is a loooooooooooooong magic message.</span>
-                            </div>
-                            <div class='im-content-item [me]'>
-                                <span class='im-level vip3'>vip3</span>
-                                <!-- <span class='im-badge'></span> -->
-                                <span class='im-nick'>Spencer</span>
-                                <span class='im-separator'>:</span>
-                                <span class='im-body'><span class='im-emoji'>&#x1F600;</span><span class='im-emoji'>&#x1F600;</span><span class='im-emoji'>&#x1F600;</span>Hi there! This is a loooooooooooooong magic message.</span>
-                            </div>
-                        </div>
-                        <div class='im-display'></div>
-                        <div class='im-toolbar'>
-                            <div class='im-select emojipicker'>
-                                <div class='im-select-text'>&#x1F600;</div>
-                                <div class='im-select-menu'>
-                                    <span class='im-select-option'>&#x1F600;</span>
-                                    <span class='im-select-option'>&#x1F601;</span>
-                                    <span class='im-select-option'>&#x1F602;</span>
-                                    <span class='im-select-option'>&#x1F603;</span>
-                                    <span class='im-select-option'>&#x1F604;</span>
-                                    <span class='im-select-option'>&#x1F605;</span>
-                                    <span class='im-select-option'>&#x1F606;</span>
-                                    <span class='im-select-option'>&#x1F607;</span>
-                                    <span class='im-select-option'>&#x1F608;</span>
-                                    <span class='im-select-option'>&#x1F609;</span>
-                                    <span class='im-select-option'>&#x1F60A;</span>
+    <div id='dialog'>
+        <div class='im-wrapper im-ui-classic' state=''>
+            <div class="im-tab nav">
+                <div class="im-tab-head">
+                    <div class="im-tab-item messages active"></div>
+                    <div class="im-tab-item contacts"></div>
+                    <div class="im-tab-item settings"></div>
+                </div>
+                <div class="im-tab-body">
+                    <div class="im-tab-page messages active">
+                        <div class="im-messages">
+                            <div class="im-tab dialogs">
+                                <div class="im-tab-head">
+                                    <div class="im-tab-item 001 active">
+                                        <div class="im-card">
+                                            <div class="im-nick">Group 001</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="im-tab-body">
+                                    <div class="im-tab-page 001 active">
+                                        <div class="im-dialog">
+                                            <div class="im-title">
+                                                <span class="im-label title"></span>
+                                            </div>
+                                            <div class='im-content'>
+                                                <div class='im-message-time'>2021-12-01 12:00:00</div>
+                                                <div class='im-message-item [me]'>
+                                                    <span class='im-level vip3'>vip3</span>
+                                                    <!-- <span class='im-badge'></span> -->
+                                                    <span class='im-nick'>Spencer</span>
+                                                    <span class='im-separator'>:</span>
+                                                    <span class='im-body'><span class='im-emoji'>&#x1F600;</span><span class='im-emoji'>&#x1F600;</span><span class='im-emoji'>&#x1F600;</span>Hi there! This is a loooooooooooooong magic message.</span>
+                                                </div>
+                                                <div class='im-message-item [me]'>
+                                                    <span class='im-level vip3'>vip3</span>
+                                                    <!-- <span class='im-badge'></span> -->
+                                                    <span class='im-nick'>Spencer</span>
+                                                    <span class='im-separator'>:</span>
+                                                    <span class='im-body'><span class='im-emoji'>&#x1F600;</span><span class='im-emoji'>&#x1F600;</span><span class='im-emoji'>&#x1F600;</span>Hi there! This is a loooooooooooooong magic message.</span>
+                                                </div>
+                                            </div>
+                                            <div class="im-toolbar">
+                                                <div class="im-select emojipicker" value="&#x1F600;">
+                                                    <div class='im-select-text'>&#x1F600;</div>
+                                                    <div class="im-select-menu" style="visibility: hidden;">
+                                                        <span class='im-select-option'>&#x1F600;</span>
+                                                        <span class='im-select-option'>&#x1F601;</span>
+                                                        <span class='im-select-option'>&#x1F602;</span>
+                                                        <span class='im-select-option'>&#x1F603;</span>
+                                                        <span class='im-select-option'>&#x1F604;</span>
+                                                        <span class='im-select-option'>&#x1F605;</span>
+                                                        <span class='im-select-option'>&#x1F606;</span>
+                                                        <span class='im-select-option'>&#x1F607;</span>
+                                                        <span class='im-select-option'>&#x1F608;</span>
+                                                        <span class='im-select-option'>&#x1F609;</span>
+                                                        <span class='im-select-option'>&#x1F60A;</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="im-input">
+                                                <textarea maxlength="500"></textarea>
+                                                <span class="im-button">Send</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class='im-input'>
-                            <textarea></textarea>
-                            <span class='im-button green'>Send</span>
-                        </div>
+                    </div>
+                    <div class="im-tab-page contacts">
+                        <div class="im-contacts"></div>
+                    </div>
+                    <div class="im-tab-page settings">
+                        <div class="im-settings"></div>
                     </div>
                 </div>
-            </section>
+            </div>
         </div>
     </div>
 

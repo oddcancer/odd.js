@@ -70,7 +70,7 @@
                 result();
             }, function (m) {
                 _logger.error(`Failed to join ${id}: ${m.Arguments.description}`);
-                status();
+                status(m.Arguments.description);
             }), { chan: id });
             return await ret;
         };
@@ -86,29 +86,16 @@
                 result();
             }, function (m) {
                 _logger.error(`Failed to leave ${id}: ${m.Arguments.description}`);
-                status();
+                status(m.Arguments.description);
             }), { chan: id });
             return await ret;
         };
 
-        _this.send = async function (chan, text) {
+        _this.send = async function (id, text, broadcast) {
             return await _this.sendUserControl(0, null, {
                 type: UserControl.TEXT,
-                cast: 'multi',
-                chan: chan,
-                text: text,
-            }).then(() => {
-                _logger.debug(`Send text success.`);
-            }).catch((err) => {
-                _logger.error(`Failed to send text: ${err}`);
-            });
-        };
-
-        _this.sendTo = async function (to, text) {
-            return await _this.sendUserControl(0, null, {
-                type: UserControl.TEXT,
-                cast: 'uni',
-                to: to,
+                cast: broadcast ? 'multi' : 'uni',
+                id: id,
                 text: text,
             }).then(() => {
                 _logger.debug(`Send text success.`);
